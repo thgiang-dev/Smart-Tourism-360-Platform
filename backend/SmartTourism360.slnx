@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="SmartTourism360.Api/SmartTourism360.Api.csproj" />
+  <Project Path="SmartTourism360.Application/SmartTourism360.Application.csproj" />
+  <Project Path="SmartTourism360.Domain/SmartTourism360.Domain.csproj" />
+  <Project Path="SmartTourism360.Infrastructure/SmartTourism360.Infrastructure.csproj" />
+</Solution>
