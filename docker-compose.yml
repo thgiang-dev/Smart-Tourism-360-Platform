@@ -1,0 +1,106 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgis/postgis:15-3.3
+    container_name: smart_tourism_postgres
+    restart: always
+    environment:
+      POSTGRES_DB: smart_tourism_360
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres_secure_pass
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data_prod:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d smart_tourism_360 -p 5432"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - smart-tourism-network
+
+  minio:
+    image: minio/minio
+    container_name: smart_tourism_minio
+    restart: always
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin_secure_pass
+    volumes:
+      - minio_data_prod:/data
+    command: server /data --console-address ":9001"
+    networks:
+      - smart-tourism-network
+
+  minio-init:
+    image: minio/mc
+    container_name: smart_tourism_minio_init
+    depends_on:
+      - minio
+    entrypoint: >
+      /bin/sh -c "
+      /usr/bin/mc alias set myminio http://minio:9000 minioadmin minioadmin_secure_pass;
+      /usr/bin/mc mb --ignore-existing myminio/smart-tourism-media;
+      /usr/bin/mc anonymous set public myminio/smart-tourism-media;
+      exit 0;
+      "
+    networks:
+      - smart-tourism-network
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: smart_tourism_backend
+    restart: always
+    ports:
+      - "5074:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=smart_tourism_360;Username=postgres;Password=postgres_secure_pass;Include Error Detail=true
+      - MinIo__Endpoint=minio:9000
+      - MinIo__PublicEndpoint=localhost:9000
+      - MinIo__AccessKey=minioadmin
+      - MinIo__SecretKey=minioadmin_secure_pass
+      - MinIo__BucketName=smart-tourism-media
+      - MinIo__Secure=false
+      - Jwt__Key=smart_tourism_360_super_secret_jwt_key_2026_production_safe_development_only
+      - Jwt__Issuer=smarttourism360.vn
+      - Jwt__Audience=smarttourism360.vn
+    depends_on:
+      postgres:
+        condition: service_healthy
+      minio-init:
+        condition: service_started
+    networks:
+      - smart-tourism-network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        - VITE_API_BASE_URL=http://localhost:5074
+    container_name: smart_tourism_frontend
+    restart: always
+    ports:
+      - "5173:80"
+    depends_on:
+      - backend
+    networks:
+      - smart-tourism-network
+
+volumes:
+  postgres_data_prod:
+    driver: local
+  minio_data_prod:
+    driver: local
+
+networks:
+  smart-tourism-network:
+    driver: bridge
