@@ -126,15 +126,15 @@ Hãy nâng cấp toàn bộ dự án lên v2.
 
 ## **5\. Roadmap tổng quan v2**
 
-| Sprint | Tên sprint | Trọng tâm | Kết quả đầu ra |
-| ----- | ----- | ----- | ----- |
-| Sprint 12 | UI/UX Upgrade | Nâng cấp giao diện public, tour 360, admin | Giao diện đẹp hơn, dễ dùng hơn |
-| Sprint 13 | Route / Itinerary | Tuyến tham quan | Admin tạo tuyến, du khách xem tuyến trên bản đồ |
-| Sprint 14 | Analytics & Tracking | Ghi nhận hành vi người dùng | Dashboard thống kê cơ bản |
-| Sprint 15 | Multi-language Support | Song ngữ Việt \- Anh | Public data hỗ trợ languageCode |
-| Sprint 16 | CesiumJS 3D Map | Bản đồ 3D/WebGIS | Trang `/explore-3d` với marker 3D |
-| Sprint 17 | 3D Model Viewer | Upload/xem model 3D | Admin upload `.glb`, du khách xem model |
-| Sprint 18 | AI Tour Guide | Trợ lý AI du lịch | Chatbot hỏi đáp dựa trên dữ liệu nội bộ |
+| Sprint | Tên sprint | Trọng tâm | Kết quả đầu ra | Trạng thái |
+| ----- | ----- | ----- | ----- | ----- |
+| Sprint 12 | UI/UX Upgrade | Nâng cấp giao diện public, tour 360, admin | Giao diện đẹp hơn, dễ dùng hơn | [x] Đã hoàn thành |
+| Sprint 13 | Route / Itinerary | Tuyến tham quan | Admin tạo tuyến, du khách xem tuyến trên bản đồ | [ ] Chưa thực hiện |
+| Sprint 14 | Analytics & Tracking | Ghi nhận hành vi người dùng | Dashboard thống kê cơ bản | [ ] Chưa thực hiện |
+| Sprint 15 | Multi-language Support | Song ngữ Việt \- Anh | Public data hỗ trợ languageCode | [ ] Chưa thực hiện |
+| Sprint 16 | CesiumJS 3D Map | Bản đồ 3D/WebGIS | Trang `/explore-3d` với marker 3D | [ ] Chưa thực hiện |
+| Sprint 17 | 3D Model Viewer | Upload/xem model 3D | Admin upload `.glb`, du khách xem model | [ ] Chưa thực hiện |
+| Sprint 18 | AI Tour Guide | Trợ lý AI du lịch | Chatbot hỏi đáp dựa trên dữ liệu nội bộ | [ ] Chưa thực hiện |
 
 Ghi chú: Sprint 15 được thêm vào roadmap để lấp khoảng trống giữa Analytics và CesiumJS. Nếu bạn muốn ưu tiên công nghệ cao, Sprint 15 có thể tạm hoãn và chuyển CesiumJS lên trước.
 
