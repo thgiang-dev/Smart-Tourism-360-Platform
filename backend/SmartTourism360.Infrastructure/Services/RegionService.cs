@@ -37,6 +37,18 @@ namespace SmartTourism360.Infrastructure.Services
             return ApiResponse<RegionDto>.SuccessResponse(MapToDto(region), "Lấy khu vực hiện tại thành công.");
         }
 
+        public async Task<ApiResponse<List<RegionDto>>> GetAllPublicRegionsAsync()
+        {
+            var regions = await _context.Regions
+                .Include(r => r.CoverImage)
+                .Where(r => r.Status == "published")
+                .OrderBy(r => r.Name)
+                .ToListAsync();
+
+            var dtos = regions.Select(MapToDto).ToList();
+            return ApiResponse<List<RegionDto>>.SuccessResponse(dtos, "Lấy danh sách khu vực thành công.");
+        }
+
         public async Task<ApiResponse<List<RegionDto>>> GetAllAdminRegionsAsync()
         {
             var regions = await _context.Regions

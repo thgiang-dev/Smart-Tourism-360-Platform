@@ -20,6 +20,8 @@ namespace SmartTourism360.Infrastructure.Data
         public DbSet<Panorama> Panoramas { get; set; } = null!;
         public DbSet<Hotspot> Hotspots { get; set; } = null!;
         public DbSet<AudioGuide> AudioGuides { get; set; } = null!;
+        public DbSet<Route> Routes { get; set; } = null!;
+        public DbSet<RouteDestination> RouteDestinations { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -182,6 +184,43 @@ namespace SmartTourism360.Infrastructure.Data
                 entity.HasOne(a => a.Media)
                     .WithMany()
                     .HasForeignKey(a => a.MediaId)
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            // --- Cấu hình bảng Routes ---
+            modelBuilder.Entity<Route>(entity =>
+            {
+                entity.ToTable("routes");
+                entity.HasIndex(r => new { r.RegionId, r.Slug }).IsUnique();
+                entity.HasIndex(r => r.Status);
+                entity.HasIndex(r => r.Theme);
+
+                entity.HasOne(r => r.Region)
+                    .WithMany()
+                    .HasForeignKey(r => r.RegionId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasOne(r => r.Thumbnail)
+                    .WithMany()
+                    .HasForeignKey(r => r.ThumbnailId)
+                    .OnDelete(DeleteBehavior.SetNull);
+            });
+
+            // --- Cấu hình bảng RouteDestinations ---
+            modelBuilder.Entity<RouteDestination>(entity =>
+            {
+                entity.ToTable("route_destinations");
+                entity.HasIndex(rd => new { rd.RouteId, rd.DestinationId }).IsUnique();
+                entity.HasIndex(rd => new { rd.RouteId, rd.DisplayOrder });
+
+                entity.HasOne(rd => rd.Route)
+                    .WithMany(r => r.RouteDestinations)
+                    .HasForeignKey(rd => rd.RouteId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasOne(rd => rd.Destination)
+                    .WithMany()
+                    .HasForeignKey(rd => rd.DestinationId)
                     .OnDelete(DeleteBehavior.Restrict);
             });
         }

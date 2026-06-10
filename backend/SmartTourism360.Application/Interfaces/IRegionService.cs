@@ -9,6 +9,7 @@ namespace SmartTourism360.Application.Interfaces
     public interface IRegionService
     {
         Task<ApiResponse<RegionDto>> GetCurrentRegionAsync();
+        Task<ApiResponse<List<RegionDto>>> GetAllPublicRegionsAsync();
         Task<ApiResponse<List<RegionDto>>> GetAllAdminRegionsAsync();
         Task<ApiResponse<RegionDto>> GetByIdAsync(Guid id);
         Task<ApiResponse<RegionDto>> CreateAsync(CreateRegionRequest request);

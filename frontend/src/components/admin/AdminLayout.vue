@@ -56,6 +56,15 @@
             <NavigationIcon class="w-5 h-5" />
             <span>Tour ảo 360°</span>
           </router-link>
+
+          <router-link 
+            to="/admin/routes"
+            active-class="bg-teal-700/20 text-teal-400 font-semibold border-l-4 border-teal-500"
+            class="flex items-center space-x-3 px-4 py-3 rounded-lg text-slate-400 hover:bg-slate-900 hover:text-slate-100 transition duration-150"
+          >
+            <RouteIcon class="w-5 h-5" />
+            <span>Tuyến tham quan</span>
+          </router-link>
         </nav>
       </div>
 
@@ -150,6 +159,16 @@
             <NavigationIcon class="w-5 h-5" />
             <span>Tour ảo 360°</span>
           </router-link>
+
+          <router-link 
+            to="/admin/routes"
+            active-class="bg-teal-700/20 text-teal-400 font-semibold border-l-4 border-teal-500"
+            @click="isMobileMenuOpen = false"
+            class="flex items-center space-x-3 px-4 py-3 rounded-lg text-slate-400 hover:bg-slate-900 hover:text-slate-100 transition duration-150"
+          >
+            <RouteIcon class="w-5 h-5" />
+            <span>Tuyến tham quan</span>
+          </router-link>
         </nav>
       </div>
 
@@ -216,6 +235,7 @@ import {
   Layers as LayersIcon, 
   Image as ImageIcon, 
   Navigation as NavigationIcon, 
+  Route as RouteIcon,
   LogOut as LogOutIcon, 
   Menu as MenuIcon, 
   X as XIcon 
@@ -243,6 +263,10 @@ const pageTitle = computed(() => {
   if (route.name === 'AdminVirtualTours') return 'Quản lý Tour ảo 360°'
   if (route.name === 'AdminPanoramas') return 'Quản lý Cảnh Panorama'
   if (route.name === 'AdminHotspots') return 'Thiết lập Điểm tương tác (Hotspot)'
+  if (route.name === 'AdminRoutes') return 'Quản lý Tuyến tham quan'
+  if (route.name === 'AdminCreateRoute') return 'Tạo Tuyến tham quan'
+  if (route.name === 'AdminEditRoute') return 'Chỉnh sửa Tuyến tham quan'
+  if (route.name === 'AdminRouteDestinations') return 'Thiết lập Địa điểm cho Tuyến'
   return 'Hệ thống Quản trị'
 })
 

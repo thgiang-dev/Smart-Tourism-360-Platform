@@ -115,6 +115,7 @@ const isMobileMenuOpen = ref(false)
 const navLinks = [
   { label: 'Trang chủ', to: '/' },
   { label: 'Bản đồ khám phá', to: '/explore' },
-  { label: 'Địa điểm du lịch', to: '/destinations' }
+  { label: 'Địa điểm du lịch', to: '/destinations' },
+  { label: 'Tuyến tham quan', to: '/routes' }
 ]
 </script>

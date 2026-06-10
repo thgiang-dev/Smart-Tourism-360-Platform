@@ -289,6 +289,69 @@ namespace SmartTourism360.Infrastructure.Data
                         await SeedTourForCauCanThoAsync(context, storageService, cauCanThoDest);
                     }
                 }
+
+                // 7. Seed Routes & RouteDestinations (Idempotent)
+                if (!await context.Routes.AnyAsync())
+                {
+                    var route1 = new Route
+                    {
+                        RegionId = regionCanTho.Id,
+                        Title = "Tuyến khám phá văn hóa Cần Thơ",
+                        Slug = "tuyen-kham-pha-van-hoa-can-tho",
+                        Description = "Tuyến tham quan kết hợp các điểm di sản văn hóa, lịch sử và tâm linh nổi tiếng của Cần Thơ.",
+                        EstimatedDuration = "Nửa ngày",
+                        DistanceKm = 12.5m,
+                        Theme = "culture",
+                        Status = "published",
+                        CreatedAt = DateTime.UtcNow,
+                        UpdatedAt = DateTime.UtcNow
+                    };
+                    await context.Routes.AddAsync(route1);
+
+                    var route2 = new Route
+                    {
+                        RegionId = regionCanTho.Id,
+                        Title = "Tuyến sinh thái sông nước miệt vườn",
+                        Slug = "tuyen-sinh-thai-song-nuoc-miet-vuon",
+                        Description = "Hành trình trải nghiệm văn hóa sông nước tại Chợ Nổi và các điểm du lịch nhà vườn sinh thái.",
+                        EstimatedDuration = "Một ngày",
+                        DistanceKm = 22.0m,
+                        Theme = "eco",
+                        Status = "published",
+                        CreatedAt = DateTime.UtcNow,
+                        UpdatedAt = DateTime.UtcNow
+                    };
+                    await context.Routes.AddAsync(route2);
+
+                    await context.SaveChangesAsync();
+
+                    // Map destinations
+                    var chuaOng = await context.Destinations.FirstOrDefaultAsync(d => d.Slug == "chua-ong-can-tho");
+                    var nhaCo = await context.Destinations.FirstOrDefaultAsync(d => d.Slug == "nha-co-binh-thuy");
+                    var benNinhKieu = await context.Destinations.FirstOrDefaultAsync(d => d.Slug == "ben-ninh-kieu");
+                    var choNoi = await context.Destinations.FirstOrDefaultAsync(d => d.Slug == "cho-noi-cai-rang");
+                    var myKhanh = await context.Destinations.FirstOrDefaultAsync(d => d.Slug == "lang-du-lich-my-khanh");
+
+                    if (chuaOng != null && nhaCo != null && benNinhKieu != null)
+                    {
+                        await context.RouteDestinations.AddRangeAsync(
+                            new RouteDestination { RouteId = route1.Id, DestinationId = chuaOng.Id, DisplayOrder = 1, EstimatedStayTime = "45 phút", Note = "Điểm khởi đầu tâm linh tại Chùa Ông.", CreatedAt = DateTime.UtcNow },
+                            new RouteDestination { RouteId = route1.Id, DestinationId = benNinhKieu.Id, DisplayOrder = 2, EstimatedStayTime = "1 giờ", Note = "Dạo mát, ngắm cảnh sông nước bờ sông Hậu.", CreatedAt = DateTime.UtcNow },
+                            new RouteDestination { RouteId = route1.Id, DestinationId = nhaCo.Id, DisplayOrder = 3, EstimatedStayTime = "1 giờ 30 phút", Note = "Khám phá kiến trúc Đông Dương độc đáo tại Nhà cổ Bình Thủy.", CreatedAt = DateTime.UtcNow }
+                        );
+                    }
+
+                    if (choNoi != null && myKhanh != null && benNinhKieu != null)
+                    {
+                        await context.RouteDestinations.AddRangeAsync(
+                            new RouteDestination { RouteId = route2.Id, DestinationId = choNoi.Id, DisplayOrder = 1, EstimatedStayTime = "2 giờ", Note = "Ghé thăm Chợ nổi Cái Răng tấp nập buổi sớm.", CreatedAt = DateTime.UtcNow },
+                            new RouteDestination { RouteId = route2.Id, DestinationId = benNinhKieu.Id, DisplayOrder = 2, EstimatedStayTime = "45 phút", Note = "Bến tàu đón trả khách tham quan sông nước.", CreatedAt = DateTime.UtcNow },
+                            new RouteDestination { RouteId = route2.Id, DestinationId = myKhanh.Id, DisplayOrder = 3, EstimatedStayTime = "3 giờ", Note = "Thưởng thức ẩm thực và vui chơi dân gian tại Làng du lịch Mỹ Khánh.", CreatedAt = DateTime.UtcNow }
+                        );
+                    }
+
+                    await context.SaveChangesAsync();
+                }
             }
         }
 

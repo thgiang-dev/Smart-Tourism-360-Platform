@@ -35,6 +35,16 @@ const routes = [
         path: 'destinations/:id',
         name: 'DestinationDetail',
         component: DestinationDetail
+      },
+      {
+        path: 'routes',
+        name: 'PublicRoutes',
+        component: () => import('../views/Routes.vue')
+      },
+      {
+        path: 'routes/:slug',
+        name: 'RouteDetail',
+        component: () => import('../views/RouteDetail.vue')
       }
     ]
   },
@@ -100,6 +110,28 @@ const routes = [
         path: 'panoramas/:id/hotspots',
         name: 'AdminHotspots',
         component: HotspotEditor,
+        props: true
+      },
+      {
+        path: 'routes',
+        name: 'AdminRoutes',
+        component: () => import('../views/admin/Routes.vue')
+      },
+      {
+        path: 'routes/new',
+        name: 'AdminCreateRoute',
+        component: () => import('../views/admin/RouteForm.vue')
+      },
+      {
+        path: 'routes/:id/edit',
+        name: 'AdminEditRoute',
+        component: () => import('../views/admin/RouteForm.vue'),
+        props: true
+      },
+      {
+        path: 'routes/:id/destinations',
+        name: 'AdminRouteDestinations',
+        component: () => import('../views/admin/RouteDestinations.vue'),
         props: true
       }
     ]

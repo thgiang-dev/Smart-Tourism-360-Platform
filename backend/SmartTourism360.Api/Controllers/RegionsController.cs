@@ -19,6 +19,13 @@ namespace SmartTourism360.Api.Controllers
 
         // --- Public Endpoints ---
 
+        [HttpGet("/api/regions")]
+        public async Task<IActionResult> GetAllPublic()
+        {
+            var result = await _regionService.GetAllPublicRegionsAsync();
+            return Success(result.Data, result.Message);
+        }
+
         [HttpGet("/api/regions/current")]
         public async Task<IActionResult> GetCurrent()
         {

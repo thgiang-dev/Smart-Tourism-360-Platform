@@ -405,8 +405,10 @@ import {
   ChevronLeft as ChevronLeftIcon,
   ChevronRight as ChevronRightIcon,
   Play as PlayIcon,
-  PauseIcon,
-  Headphones as HeadphonesIcon
+  Pause as PauseIcon,
+  Headphones as HeadphonesIcon,
+  Map as MapIcon,
+  ChevronDown as ChevronDownIcon
 } from 'lucide-vue-next'
 
 // Redefine Leaflet default icon paths to prevent broken marker images under Vite/bundler
@@ -455,16 +457,17 @@ const fetchDestinationDetail = async () => {
     if (response.success) {
       detail.value = response.data
       audioGuidesList.value = response.data.audioGuides || []
-      
-      // Initialize leaflet map in detail on nextTick
-      nextTick(() => {
-        initMiniMap()
-      })
     }
   } catch (err) {
     error.value = err.message || 'Không thể tải thông tin chi tiết địa điểm.'
   } finally {
     loading.value = false
+  }
+
+  if (detail.value) {
+    nextTick(() => {
+      initMiniMap()
+    })
   }
 }
 
