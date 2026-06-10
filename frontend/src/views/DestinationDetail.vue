@@ -26,44 +26,49 @@
     </div>
 
     <!-- Main Detail View (when data is successfully loaded) -->
-    <div v-else-if="detail" class="space-y-8">
+    <div v-else-if="detail" class="space-y-10 animate-fade-in">
       
       <!-- Top Cover Image Hero Block -->
-      <div class="relative w-full h-[350px] md:h-[480px] bg-slate-900 overflow-hidden shadow-lg">
+      <div class="relative w-full h-[380px] md:h-[520px] bg-slate-900 overflow-hidden shadow-2xl">
         <img 
           v-if="detail.coverImageUrl" 
           :src="detail.coverImageUrl" 
-          class="w-full h-full object-cover opacity-85" 
+          class="w-full h-full object-cover opacity-80 scale-102 hover:scale-105 transition-all duration-700" 
+          :alt="detail.name"
         />
-        <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent"></div>
+        <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/50 to-transparent"></div>
+        <div class="absolute inset-0 bg-gradient-to-r from-slate-950/60 to-transparent pointer-events-none"></div>
         
         <!-- Back Navigation in Cover -->
         <div class="absolute top-6 left-4 md:left-8 z-10">
           <button 
             @click="goBack"
-            class="inline-flex items-center space-x-2 px-4 py-2 bg-slate-900/60 hover:bg-slate-900/80 backdrop-blur-sm border border-slate-700/40 text-white font-bold rounded-xl text-xs shadow-md transition duration-150"
+            class="premium-btn inline-flex items-center space-x-2 px-4.5 py-2.5 bg-slate-950/80 hover:bg-slate-900 backdrop-blur-md border border-slate-700/60 text-white font-extrabold rounded-2xl text-xs shadow-lg transition duration-200"
           >
-            <ArrowLeftIcon class="w-4 h-4" />
+            <ArrowLeftIcon class="w-4 h-4 text-slate-300" />
             <span>Quay lại</span>
           </button>
         </div>
 
         <!-- Meta Text overlays -->
-        <div class="absolute bottom-8 left-4 md:left-8 right-4 md:right-8 z-10 max-w-4xl space-y-3">
-          <div class="flex items-center space-x-2">
+        <div class="absolute bottom-10 left-4 md:left-8 right-4 md:right-8 z-10 max-w-4xl space-y-4">
+          <div class="flex items-center space-x-3">
             <span 
-              class="px-3 py-0.5 rounded-md text-[10px] font-bold border uppercase tracking-wider bg-teal-500/20 border-teal-500/30 text-teal-300"
+              class="px-3.5 py-1 rounded-full text-[10px] font-black border uppercase tracking-wider bg-teal-500/20 border-teal-500/30 text-teal-300 backdrop-blur-md"
             >
               {{ detail.category?.name }}
             </span>
-            <span class="text-xs text-slate-300 font-semibold uppercase tracking-wider">{{ detail.regionName }}</span>
+            <span class="text-xs text-slate-300 font-bold uppercase tracking-wider flex items-center space-x-1">
+              <MapIcon class="w-3.5 h-3.5 text-slate-400" />
+              <span>{{ detail.regionName }}</span>
+            </span>
           </div>
 
-          <h1 class="text-3xl md:text-5xl font-black text-white leading-tight drop-shadow-sm">
+          <h1 class="text-3xl md:text-5xl font-black text-white leading-tight drop-shadow-md">
             {{ detail.name }}
           </h1>
 
-          <div class="flex items-center text-xs text-slate-300 space-x-2">
+          <div class="flex items-center text-xs md:text-sm text-slate-200 space-x-2 font-medium bg-slate-950/20 py-1.5 px-3 rounded-xl backdrop-blur-sm inline-flex">
             <MapPinIcon class="w-4 h-4 text-teal-400" />
             <span>{{ detail.address || 'Đang cập nhật địa chỉ' }}</span>
           </div>
@@ -77,17 +82,17 @@
         <div class="lg:col-span-8 space-y-8">
           
           <!-- Detailed content description block -->
-          <div class="bg-white p-6 md:p-8 rounded-3xl border border-slate-200/60 shadow-sm space-y-6">
-            <div class="space-y-3">
-              <h2 class="text-sm font-bold text-slate-800 uppercase tracking-wider border-b border-slate-100 pb-3">Giới thiệu tổng quan</h2>
-              <p class="text-sm font-bold text-slate-700 leading-relaxed italic border-l-4 border-teal-500 pl-4 bg-slate-50/50 py-3 rounded-r-xl">
+          <div class="bg-white p-6 md:p-10 rounded-3xl border border-slate-200/80 shadow-sm space-y-8">
+            <div class="space-y-4">
+              <h2 class="text-xs font-black text-slate-400 uppercase tracking-wider border-b border-slate-100 pb-3">Giới thiệu tổng quan</h2>
+              <p class="text-sm font-bold text-slate-700 leading-relaxed italic border-l-4 border-teal-600 pl-5 bg-teal-50/25 py-4 rounded-r-2xl">
                 {{ detail.shortDescription }}
               </p>
             </div>
             
             <div 
               v-if="detail.fullDescription"
-              class="text-sm text-slate-600 leading-relaxed space-y-4 whitespace-pre-line"
+              class="text-sm text-slate-600 leading-relaxed space-y-4 whitespace-pre-line font-medium"
             >
               {{ detail.fullDescription }}
             </div>
@@ -98,35 +103,35 @@
             v-if="detail.audioGuides && detail.audioGuides.length > 0"
             class="bg-gradient-to-br from-slate-900 to-slate-950 p-6 md:p-8 rounded-3xl text-white shadow-xl space-y-6 border border-slate-800"
           >
-            <div class="flex justify-between items-center border-b border-slate-800 pb-4">
+            <div class="flex justify-between items-center border-b border-slate-850 pb-4">
               <div class="flex items-center space-x-3">
-                <div class="p-2.5 bg-teal-500/10 text-teal-400 border border-teal-500/20 rounded-xl">
-                  <HeadphonesIcon class="w-5 h-5 animate-pulse" />
+                <div class="p-2.5 bg-teal-500/10 text-teal-400 border border-teal-500/20 rounded-xl shadow-inner">
+                  <HeadphonesIcon class="w-5 h-5 animate-pulse text-teal-400" />
                 </div>
                 <div>
-                  <h3 class="text-sm font-bold uppercase tracking-wider text-slate-200">Thuyết minh âm thanh</h3>
-                  <p class="text-[11px] text-slate-400 font-semibold">Audio Guide thuyết minh địa danh</p>
+                  <h3 class="text-xs font-black uppercase tracking-wider text-slate-200">Thuyết minh âm thanh</h3>
+                  <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Audio Guide</p>
                 </div>
               </div>
               
               <!-- Indicator of duration -->
-              <span class="text-xs font-mono text-slate-400 bg-slate-800/50 px-2.5 py-1 rounded-lg">
+              <span class="text-xs font-mono text-slate-300 bg-slate-800/80 px-3 py-1 rounded-xl border border-slate-800">
                 {{ formatAudioDuration(audioGuidesList[0]?.duration) }}
               </span>
             </div>
 
             <!-- Custom player deck layout -->
             <div class="space-y-4" v-for="guide in audioGuidesList" :key="guide.id">
-              <h4 class="text-xs font-bold text-slate-300 uppercase tracking-wider">{{ guide.title }}</h4>
+              <h4 class="text-xs font-black text-slate-300 uppercase tracking-wider">{{ guide.title }}</h4>
               
-              <div class="flex items-center space-x-4">
+              <div class="flex items-center space-x-4 bg-slate-950/40 p-4 rounded-2xl border border-slate-900">
                 <!-- Action Play button -->
                 <button 
                   @click="toggleAudioPlay(guide.audioUrl)"
-                  class="w-12 h-12 rounded-full bg-teal-500 hover:bg-teal-400 text-slate-950 font-black flex items-center justify-center shadow-lg active:scale-95 transition"
+                  class="premium-btn w-12 h-12 rounded-full bg-teal-500 hover:bg-teal-400 text-slate-950 font-black flex items-center justify-center shadow-lg hover:shadow-teal-500/25"
                 >
-                  <PauseIcon v-if="audioPlaying && activeAudioUrl === guide.audioUrl" class="w-5 h-5" />
-                  <PlayIcon v-else class="w-5 h-5 translate-x-[1px]" />
+                  <PauseIcon v-if="audioPlaying && activeAudioUrl === guide.audioUrl" class="w-5 h-5 fill-slate-950" />
+                  <PlayIcon v-else class="w-5 h-5 fill-slate-950 translate-x-[1px]" />
                 </button>
 
                 <!-- Scrubber Slider -->
@@ -137,7 +142,7 @@
                   </div>
                   
                   <div 
-                    class="relative w-full h-1.5 bg-slate-800 rounded-full cursor-pointer overflow-hidden"
+                    class="relative w-full h-1.5 bg-slate-800 rounded-full cursor-pointer overflow-hidden shadow-inner"
                     @click="seekAudio"
                     ref="progressBarRef"
                   >
@@ -160,17 +165,18 @@
               ></audio>
 
               <!-- Collapsible Transcript accordion -->
-              <div v-if="guide.description" class="border border-slate-800 rounded-2xl overflow-hidden bg-slate-900/40">
+              <div v-if="guide.description" class="border border-slate-850 rounded-2xl overflow-hidden bg-slate-950/25">
                 <button 
                   @click="showTranscript = !showTranscript"
-                  class="w-full px-4 py-3 bg-slate-900/60 hover:bg-slate-900 text-xs font-bold text-slate-300 flex justify-between items-center transition"
+                  class="w-full px-5 py-3.5 bg-slate-950/40 hover:bg-slate-950 text-xs font-black text-slate-300 flex justify-between items-center transition duration-200 border-b border-transparent focus:outline-none"
+                  :class="showTranscript ? 'border-slate-850' : ''"
                 >
                   <span>Xem văn bản thuyết minh (Transcript)</span>
-                  <span>{{ showTranscript ? 'Thu gọn' : 'Mở rộng' }}</span>
+                  <ChevronDownIcon class="w-4 h-4 text-slate-400 transition-transform duration-200" :class="showTranscript ? 'rotate-180' : ''" />
                 </button>
                 <div 
                   v-if="showTranscript" 
-                  class="p-4 text-xs text-slate-400 leading-relaxed max-h-48 overflow-y-auto border-t border-slate-800 whitespace-pre-line"
+                  class="p-5 text-xs text-slate-400 leading-relaxed max-h-48 overflow-y-auto whitespace-pre-line"
                 >
                   {{ guide.description }}
                 </div>
@@ -179,50 +185,60 @@
           </div>
 
           <!-- Quick Information Cards Block -->
-          <div class="bg-white p-6 md:p-8 rounded-3xl border border-slate-200/60 shadow-sm space-y-6">
-            <h2 class="text-sm font-bold text-slate-800 uppercase tracking-wider border-b border-slate-100 pb-3">Thông tin chi tiết</h2>
+          <div class="bg-white p-6 md:p-10 rounded-3xl border border-slate-200/80 shadow-sm space-y-6">
+            <h2 class="text-xs font-black text-slate-400 uppercase tracking-wider border-b border-slate-100 pb-3">Thông tin chi tiết</h2>
             
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 text-xs leading-relaxed">
-              <div class="space-y-4">
-                <div class="flex items-start space-x-3">
-                  <ClockIcon class="w-5 h-5 text-teal-600 mt-0.5 flex-shrink-0" />
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-8 text-xs leading-relaxed font-semibold">
+              <div class="space-y-5">
+                <div class="flex items-start space-x-3.5">
+                  <div class="p-2 bg-slate-50 border border-slate-200/60 rounded-xl text-slate-600 shadow-sm flex-shrink-0">
+                    <ClockIcon class="w-4 h-4 text-teal-600" />
+                  </div>
                   <div class="space-y-0.5">
-                    <span class="text-slate-400 font-semibold uppercase tracking-wider block">Giờ hoạt động</span>
-                    <span class="font-bold text-slate-700">{{ detail.openingHours || 'Mở cửa tự do' }}</span>
+                    <span class="text-slate-400 font-bold uppercase tracking-wider block text-[10px]">Giờ hoạt động</span>
+                    <span class="font-extrabold text-slate-800 text-sm">{{ detail.openingHours || 'Mở cửa tự do' }}</span>
                   </div>
                 </div>
                 
-                <div class="flex items-start space-x-3">
-                  <TicketIcon class="w-5 h-5 text-teal-600 mt-0.5 flex-shrink-0" />
+                <div class="flex items-start space-x-3.5">
+                  <div class="p-2 bg-slate-50 border border-slate-200/60 rounded-xl text-slate-600 shadow-sm flex-shrink-0">
+                    <TicketIcon class="w-4 h-4 text-teal-600" />
+                  </div>
                   <div class="space-y-0.5">
-                    <span class="text-slate-400 font-semibold uppercase tracking-wider block">Giá vé tham khảo</span>
-                    <span class="font-bold text-slate-700">{{ detail.ticketPrice || 'Miễn phí' }}</span>
+                    <span class="text-slate-400 font-bold uppercase tracking-wider block text-[10px]">Giá vé tham khảo</span>
+                    <span class="font-extrabold text-slate-800 text-sm">{{ detail.ticketPrice || 'Miễn phí' }}</span>
                   </div>
                 </div>
               </div>
 
-              <div class="space-y-4">
-                <div v-if="detail.contactPhone" class="flex items-start space-x-3">
-                  <PhoneIcon class="w-5 h-5 text-teal-600 mt-0.5 flex-shrink-0" />
+              <div class="space-y-5">
+                <div v-if="detail.contactPhone" class="flex items-start space-x-3.5">
+                  <div class="p-2 bg-slate-50 border border-slate-200/60 rounded-xl text-slate-600 shadow-sm flex-shrink-0">
+                    <PhoneIcon class="w-4 h-4 text-teal-600" />
+                  </div>
                   <div class="space-y-0.5">
-                    <span class="text-slate-400 font-semibold uppercase tracking-wider block">Điện thoại</span>
-                    <a :href="`tel:${detail.contactPhone}`" class="font-bold text-teal-600 hover:text-teal-700">{{ detail.contactPhone }}</a>
+                    <span class="text-slate-400 font-bold uppercase tracking-wider block text-[10px]">Điện thoại</span>
+                    <a :href="`tel:${detail.contactPhone}`" class="font-extrabold text-teal-600 hover:text-teal-700 text-sm">{{ detail.contactPhone }}</a>
                   </div>
                 </div>
 
-                <div v-if="detail.contactEmail" class="flex items-start space-x-3">
-                  <MailIcon class="w-5 h-5 text-teal-600 mt-0.5 flex-shrink-0" />
+                <div v-if="detail.contactEmail" class="flex items-start space-x-3.5">
+                  <div class="p-2 bg-slate-50 border border-slate-200/60 rounded-xl text-slate-600 shadow-sm flex-shrink-0">
+                    <MailIcon class="w-4 h-4 text-teal-600" />
+                  </div>
                   <div class="space-y-0.5">
-                    <span class="text-slate-400 font-semibold uppercase tracking-wider block">Email liên hệ</span>
-                    <a :href="`mailto:${detail.contactEmail}`" class="font-bold text-teal-600 hover:text-teal-700">{{ detail.contactEmail }}</a>
+                    <span class="text-slate-400 font-bold uppercase tracking-wider block text-[10px]">Email liên hệ</span>
+                    <a :href="`mailto:${detail.contactEmail}`" class="font-extrabold text-teal-600 hover:text-teal-700 text-sm truncate block max-w-[200px]">{{ detail.contactEmail }}</a>
                   </div>
                 </div>
 
-                <div v-if="detail.websiteUrl" class="flex items-start space-x-3">
-                  <GlobeIcon class="w-5 h-5 text-teal-600 mt-0.5 flex-shrink-0" />
+                <div v-if="detail.websiteUrl" class="flex items-start space-x-3.5">
+                  <div class="p-2 bg-slate-50 border border-slate-200/60 rounded-xl text-slate-600 shadow-sm flex-shrink-0">
+                    <GlobeIcon class="w-4 h-4 text-teal-600" />
+                  </div>
                   <div class="space-y-0.5">
-                    <span class="text-slate-400 font-semibold uppercase tracking-wider block">Website chính thức</span>
-                    <a :href="detail.websiteUrl" target="_blank" class="font-bold text-teal-600 hover:text-teal-700 underline truncate max-w-[200px] block">{{ detail.websiteUrl }}</a>
+                    <span class="text-slate-400 font-bold uppercase tracking-wider block text-[10px]">Website chính thức</span>
+                    <a :href="detail.websiteUrl" target="_blank" class="font-extrabold text-teal-600 hover:text-teal-700 underline underline-offset-4 text-sm truncate max-w-[200px] block">{{ detail.websiteUrl }}</a>
                   </div>
                 </div>
               </div>
@@ -232,20 +248,20 @@
           <!-- Photo Gallery (images) -->
           <div 
             v-if="detail.gallery && detail.gallery.length > 0"
-            class="bg-white p-6 md:p-8 rounded-3xl border border-slate-200/60 shadow-sm space-y-4"
+            class="bg-white p-6 md:p-10 rounded-3xl border border-slate-200/80 shadow-sm space-y-5"
           >
-            <h2 class="text-sm font-bold text-slate-800 uppercase tracking-wider border-b border-slate-100 pb-3">Thư viện hình ảnh</h2>
+            <h2 class="text-xs font-black text-slate-400 uppercase tracking-wider border-b border-slate-100 pb-3">Thư viện hình ảnh</h2>
             
-            <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
+            <div class="grid grid-cols-2 sm:grid-cols-3 gap-5">
               <div 
                 v-for="(img, idx) in detail.gallery" 
                 :key="img.id"
-                class="aspect-[4/3] rounded-2xl overflow-hidden cursor-pointer border border-slate-200/60 hover:border-teal-500/40 relative group bg-slate-50 transition"
+                class="aspect-[4/3] rounded-2xl overflow-hidden cursor-pointer border border-slate-200/80 hover:border-teal-500/40 relative group bg-slate-100 transition duration-300"
                 @click="openLightbox(idx)"
               >
-                <img :src="img.url" class="w-full h-full object-cover group-hover:scale-102 transition duration-200" />
-                <div class="absolute inset-0 bg-slate-900/40 opacity-0 group-hover:opacity-100 transition flex items-end p-3">
-                  <p class="text-[10px] text-white font-bold truncate w-full">{{ img.caption || 'Xem ảnh lớn' }}</p>
+                <img :src="img.url" class="w-full h-full object-cover group-hover:scale-105 transition duration-500" />
+                <div class="absolute inset-0 bg-slate-950/40 opacity-0 group-hover:opacity-100 transition flex items-end p-4">
+                  <p class="text-[10px] text-white font-black truncate w-full shadow-sm">{{ img.caption || 'Xem ảnh lớn' }}</p>
                 </div>
               </div>
             </div>
@@ -254,14 +270,14 @@
           <!-- Video presentation (MP4) -->
           <div 
             v-if="detail.videos && detail.videos.length > 0"
-            class="bg-white p-6 md:p-8 rounded-3xl border border-slate-200/60 shadow-sm space-y-4"
+            class="bg-white p-6 md:p-10 rounded-3xl border border-slate-200/80 shadow-sm space-y-5"
           >
-            <h2 class="text-sm font-bold text-slate-800 uppercase tracking-wider border-b border-slate-100 pb-3">Video giới thiệu</h2>
+            <h2 class="text-xs font-black text-slate-400 uppercase tracking-wider border-b border-slate-100 pb-3">Video giới thiệu</h2>
             
             <div class="space-y-6">
-              <div v-for="vid in detail.videos" :key="vid.id" class="rounded-2xl overflow-hidden shadow-md border border-slate-200 bg-slate-950 aspect-video">
+              <div v-for="vid in detail.videos" :key="vid.id" class="rounded-3xl overflow-hidden shadow-md border border-slate-200 bg-slate-950 aspect-video">
                 <video controls class="w-full h-full" :src="vid.url"></video>
-                <div v-if="vid.caption" class="p-3 bg-white text-xs text-slate-600 font-medium">
+                <div v-if="vid.caption" class="p-4 bg-white text-xs text-slate-600 font-bold border-t border-slate-100">
                   {{ vid.caption }}
                 </div>
               </div>
@@ -275,43 +291,43 @@
           <!-- Virtual Tour 360 Call to Action Button Card -->
           <div 
             v-if="detail.hasVirtualTour"
-            class="bg-gradient-to-r from-teal-500 to-emerald-600 p-6 rounded-3xl text-slate-950 shadow-xl space-y-4 text-center border border-teal-400/20 animate-pulse-glow transition-transform duration-300"
+            class="bg-gradient-to-r from-teal-500 to-emerald-600 p-6 md:p-8 rounded-3xl text-slate-950 shadow-xl space-y-5 text-center border border-teal-400/20 animate-pulse-glow transition duration-300 hover:scale-101"
           >
-            <div class="w-14 h-14 bg-slate-950/10 rounded-2xl flex items-center justify-center mx-auto text-slate-950">
-              <CompassIcon class="w-8 h-8 animate-spin-slow" />
+            <div class="w-16 h-16 bg-slate-950/10 rounded-2xl flex items-center justify-center mx-auto text-slate-950 shadow-inner">
+              <CompassIcon class="w-9 h-9 animate-spin-slow text-slate-950" />
             </div>
-            <div class="space-y-1">
-              <h3 class="text-lg font-black uppercase tracking-wider">Trải nghiệm Tour 360°</h3>
-              <p class="text-xs text-slate-900/80 font-semibold">Tham quan không gian thực tế ảo tương tác trực tiếp</p>
+            <div class="space-y-2">
+              <h3 class="text-xl font-black uppercase tracking-wider text-slate-950">Trải nghiệm Tour 360°</h3>
+              <p class="text-xs text-slate-900/85 font-extrabold leading-relaxed">Tham quan không gian thực tế ảo tương tác trực tiếp</p>
             </div>
             
             <router-link
               :to="`/destinations/${detail.id}/tour`"
-              class="w-full py-3 bg-slate-950 hover:bg-slate-900 hover:scale-[1.02] text-white font-bold rounded-xl text-sm transition duration-150 flex items-center justify-center space-x-2 shadow-lg"
+              class="premium-btn w-full py-3.5 bg-slate-950 hover:bg-slate-900 text-white font-black rounded-2xl text-xs flex items-center justify-center space-x-2 shadow-lg"
             >
               <span>Vào tham quan ảo</span>
-              <CompassIcon class="w-4 h-4" />
+              <CompassIcon class="w-4 h-4 fill-white" />
             </router-link>
           </div>
 
           <!-- Position display card -->
-          <div class="bg-white p-6 rounded-3xl border border-slate-200/60 shadow-sm space-y-4">
-            <h3 class="text-xs font-bold text-slate-800 uppercase tracking-wider border-b border-slate-100 pb-3">Định vị địa lý</h3>
+          <div class="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm space-y-5">
+            <h3 class="text-xs font-black text-slate-400 uppercase tracking-wider border-b border-slate-100 pb-3">Định vị địa lý</h3>
             
             <!-- Map box Leaflet -->
-            <div class="h-64 rounded-2xl overflow-hidden border border-slate-200 bg-slate-50 relative z-10">
+            <div class="h-64 rounded-2xl overflow-hidden border border-slate-200 bg-slate-100 relative z-10">
               <div ref="miniMapContainer" class="w-full h-full"></div>
             </div>
 
             <!-- Latitude longitude logs -->
-            <div class="grid grid-cols-2 gap-4 text-[10px] font-mono text-slate-500 bg-slate-50 p-3 rounded-xl border border-slate-100">
+            <div class="grid grid-cols-2 gap-4 text-[10px] font-mono text-slate-500 bg-slate-50 p-3.5 rounded-2xl border border-slate-150 shadow-inner">
               <div>
-                <span class="text-slate-400 block uppercase font-bold mb-0.5">Vĩ độ (Lat)</span>
-                <span class="font-bold text-slate-700">{{ detail.latitude }}</span>
+                <span class="text-slate-400 block uppercase font-black mb-0.5">Vĩ độ (Lat)</span>
+                <span class="font-extrabold text-slate-700">{{ detail.latitude }}</span>
               </div>
               <div>
-                <span class="text-slate-400 block uppercase font-bold mb-0.5">Kinh độ (Lng)</span>
-                <span class="font-bold text-slate-700">{{ detail.longitude }}</span>
+                <span class="text-slate-400 block uppercase font-black mb-0.5">Kinh độ (Lng)</span>
+                <span class="font-extrabold text-slate-700">{{ detail.longitude }}</span>
               </div>
             </div>
           </div>

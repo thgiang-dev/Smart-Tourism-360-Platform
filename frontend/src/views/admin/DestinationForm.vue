@@ -1,26 +1,28 @@
 <template>
   <div class="space-y-6">
     <!-- Header Page Actions -->
-    <div class="flex justify-between items-center bg-white p-6 rounded-2xl border border-slate-200/60 shadow-sm">
-      <div class="space-y-1">
-        <h2 class="text-lg font-bold text-slate-800">
+    <div class="flex justify-between items-center bg-gradient-to-r from-slate-900 via-slate-800 to-teal-950 p-6 md:p-8 rounded-3xl text-white shadow-xl relative overflow-hidden">
+      <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px]"></div>
+      <div class="absolute w-48 h-48 rounded-full bg-teal-500/10 blur-2xl -bottom-10 -right-10 pointer-events-none"></div>
+      <div class="relative z-10 space-y-1">
+        <h2 class="text-xl md:text-2xl font-black tracking-tight">
           {{ isEditMode ? 'Chỉnh sửa địa điểm' : 'Thêm địa điểm mới' }}
         </h2>
-        <p class="text-xs text-slate-500">
+        <p class="text-xs text-teal-200/70 font-medium">
           {{ isEditMode ? 'Cập nhật lại các thông tin của địa điểm du lịch.' : 'Tạo mới một địa điểm và thiết lập định vị địa lý.' }}
         </p>
       </div>
       <button 
         @click="goBack"
-        class="px-4 py-2 border border-slate-200 hover:bg-slate-50 text-slate-600 font-semibold rounded-xl text-sm transition"
+        class="premium-btn px-4 py-2 bg-white/10 hover:bg-white/15 border border-white/10 text-white font-bold rounded-xl text-xs transition relative z-10"
       >
         Quay lại
       </button>
     </div>
 
     <!-- Error Summary Alert -->
-    <div v-if="error" class="bg-red-50 border border-red-200 text-red-700 p-4 rounded-xl flex items-start space-x-3">
-      <AlertCircleIcon class="w-5 h-5 flex-shrink-0 mt-0.5" />
+    <div v-if="error" class="bg-red-50 border border-red-200 text-red-700 p-5 rounded-2xl flex items-start space-x-3 shadow-sm">
+      <AlertCircleIcon class="w-5 h-5 flex-shrink-0 mt-0.5 text-red-500" />
       <div class="text-sm">
         <p class="font-bold mb-1">{{ error }}</p>
         <ul v-if="validationErrors.length > 0" class="list-disc list-inside space-y-1 text-xs text-red-600">
@@ -34,158 +36,169 @@
     <!-- Split Layout Form -->
     <form @submit.prevent="submitForm" class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
       <!-- Left side: Form Input Fields (7 columns) -->
-      <div class="lg:col-span-7 bg-white p-6 md:p-8 rounded-2xl border border-slate-200/60 shadow-sm space-y-6">
-        <h3 class="text-sm font-bold text-slate-800 uppercase tracking-wider border-b border-slate-100 pb-3">Thông tin chi tiết</h3>
+      <div class="lg:col-span-7 space-y-6">
         
-        <!-- Name & Slug -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div>
-            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Tên địa điểm *</label>
-            <input 
-              v-model="form.name"
-              type="text" 
-              required
-              placeholder="Ví dụ: Chùa Ông Cần Thơ" 
-              class="w-full px-4 py-2.5 bg-slate-50/50 border border-slate-200 focus:border-teal-500/85 focus:bg-white rounded-xl text-sm focus:outline-none transition"
-            />
+        <!-- CARD 1: Basic Information -->
+        <div class="bg-white p-6 md:p-8 rounded-2xl border border-slate-200/80 shadow-sm space-y-6">
+          <h3 class="text-xs font-black text-slate-400 uppercase tracking-wider border-b border-slate-100 pb-3">Thông tin cơ bản</h3>
+          
+          <!-- Name & Slug -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Tên địa điểm *</label>
+              <input 
+                v-model="form.name"
+                type="text" 
+                required
+                placeholder="Ví dụ: Chùa Ông Cần Thơ" 
+                class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 focus:border-teal-500/80 focus:bg-white rounded-xl text-sm focus:outline-none focus:ring-4 focus:ring-teal-500/5 transition font-medium"
+              />
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Slug định danh *</label>
+              <input 
+                v-model="form.slug"
+                type="text" 
+                required
+                placeholder="vi-du-chua-ong-can-tho" 
+                class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 focus:border-teal-500/80 focus:bg-white rounded-xl text-sm focus:outline-none focus:ring-4 focus:ring-teal-500/5 transition font-mono"
+              />
+            </div>
           </div>
-          <div>
-            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Slug định danh *</label>
-            <input 
-              v-model="form.slug"
-              type="text" 
-              required
-              placeholder="vi-du-chua-ong-can-tho" 
-              class="w-full px-4 py-2.5 bg-slate-50/50 border border-slate-200 focus:border-teal-500/85 focus:bg-white rounded-xl text-sm focus:outline-none transition font-mono"
-            />
+
+          <!-- Region & Category -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Khu vực du lịch *</label>
+              <select 
+                v-model="form.regionId"
+                required
+                class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 focus:border-teal-500/80 focus:bg-white rounded-xl text-sm focus:outline-none focus:ring-4 focus:ring-teal-500/5 transition cursor-pointer appearance-none"
+                @change="handleRegionChange"
+              >
+                <option :value="null" disabled>Chọn Khu vực</option>
+                <option v-for="reg in regions" :key="reg.id" :value="reg.id">
+                  {{ reg.name }} ({{ reg.province }})
+                </option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Danh mục địa điểm *</label>
+              <select 
+                v-model="form.categoryId"
+                required
+                class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 focus:border-teal-500/80 focus:bg-white rounded-xl text-sm focus:outline-none focus:ring-4 focus:ring-teal-500/5 transition cursor-pointer appearance-none"
+              >
+                <option :value="null" disabled>Chọn Danh mục</option>
+                <option v-for="cat in categories" :key="cat.id" :value="cat.id">
+                  {{ cat.name }}
+                </option>
+              </select>
+            </div>
           </div>
         </div>
 
-        <!-- Region & Category -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div>
-            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Khu vực du lịch *</label>
-            <select 
-              v-model="form.regionId"
-              required
-              class="w-full px-3 py-2.5 bg-slate-50/50 border border-slate-200 focus:border-teal-500/85 focus:bg-white rounded-xl text-sm focus:outline-none transition"
-              @change="handleRegionChange"
-            >
-              <option :value="null" disabled>Chọn Khu vực</option>
-              <option v-for="reg in regions" :key="reg.id" :value="reg.id">
-                {{ reg.name }} ({{ reg.province }})
-              </option>
-            </select>
-          </div>
-          <div>
-            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Danh mục địa điểm *</label>
-            <select 
-              v-model="form.categoryId"
-              required
-              class="w-full px-3 py-2.5 bg-slate-50/50 border border-slate-200 focus:border-teal-500/85 focus:bg-white rounded-xl text-sm focus:outline-none transition"
-            >
-              <option :value="null" disabled>Chọn Danh mục</option>
-              <option v-for="cat in categories" :key="cat.id" :value="cat.id">
-                {{ cat.name }}
-              </option>
-            </select>
+        <!-- CARD 2: Descriptions -->
+        <div class="bg-white p-6 md:p-8 rounded-2xl border border-slate-200/80 shadow-sm space-y-6">
+          <h3 class="text-xs font-black text-slate-400 uppercase tracking-wider border-b border-slate-100 pb-3">Giới thiệu & mô tả</h3>
+          
+          <div class="space-y-4">
+            <div>
+              <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Mô tả ngắn * (Tối đa 500 ký tự)</label>
+              <textarea 
+                v-model="form.shortDescription"
+                required
+                rows="3"
+                maxlength="500"
+                placeholder="Tóm tắt ngắn gọn nét đặc trưng của địa điểm..." 
+                class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 focus:border-teal-500/80 focus:bg-white rounded-xl text-sm focus:outline-none focus:ring-4 focus:ring-teal-500/5 transition resize-none font-medium"
+              ></textarea>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Mô tả đầy đủ</label>
+              <textarea 
+                v-model="form.fullDescription"
+                rows="6"
+                placeholder="Giới thiệu chi tiết về lịch sử, kiến trúc, sự tích, hoặc hành trình trải nghiệm tại đây..." 
+                class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 focus:border-teal-500/80 focus:bg-white rounded-xl text-sm focus:outline-none focus:ring-4 focus:ring-teal-500/5 transition resize-y font-medium"
+              ></textarea>
+            </div>
           </div>
         </div>
 
-        <!-- Descriptions -->
-        <div class="space-y-4">
-          <div>
-            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Mô tả ngắn * (Tối đa 500 ký tự)</label>
-            <textarea 
-              v-model="form.shortDescription"
-              required
-              rows="3"
-              maxlength="500"
-              placeholder="Tóm tắt ngắn gọn nét đặc trưng của địa điểm..." 
-              class="w-full px-4 py-2.5 bg-slate-50/50 border border-slate-200 focus:border-teal-500/85 focus:bg-white rounded-xl text-sm focus:outline-none transition resize-none"
-            ></textarea>
-          </div>
-          <div>
-            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Mô tả đầy đủ</label>
-            <textarea 
-              v-model="form.fullDescription"
-              rows="6"
-              placeholder="Giới thiệu chi tiết về lịch sử, kiến trúc, sự tích, hoặc hành trình trải nghiệm tại đây..." 
-              class="w-full px-4 py-2.5 bg-slate-50/50 border border-slate-200 focus:border-teal-500/85 focus:bg-white rounded-xl text-sm focus:outline-none transition resize-y"
-            ></textarea>
-          </div>
-        </div>
-
-        <!-- Address & Contact Info -->
-        <div class="space-y-4 border-t border-slate-100 pt-6">
-          <h4 class="text-sm font-semibold text-slate-700">Thông tin liên hệ & địa chỉ</h4>
-          <div>
-            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Địa chỉ</label>
-            <input 
-              v-model="form.address"
-              type="text" 
-              placeholder="Số 123 Hai Bà Trưng, Ninh Kiều, Cần Thơ" 
-              class="w-full px-4 py-2.5 bg-slate-50/50 border border-slate-200 focus:border-teal-500/85 focus:bg-white rounded-xl text-sm focus:outline-none transition"
-            />
-          </div>
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <!-- CARD 3: Address & Contact Info -->
+        <div class="bg-white p-6 md:p-8 rounded-2xl border border-slate-200/80 shadow-sm space-y-6">
+          <h3 class="text-xs font-black text-slate-400 uppercase tracking-wider border-b border-slate-100 pb-3">Thông tin liên hệ & dịch vụ</h3>
+          
+          <div class="space-y-4">
             <div>
-              <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Điện thoại liên hệ</label>
+              <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Địa chỉ</label>
               <input 
-                v-model="form.contactPhone"
+                v-model="form.address"
                 type="text" 
-                placeholder="0292xxxxxx" 
-                class="w-full px-4 py-2.5 bg-slate-50/50 border border-slate-200 focus:border-teal-500/85 focus:bg-white rounded-xl text-sm focus:outline-none transition"
+                placeholder="Số 123 Hai Bà Trưng, Ninh Kiều, Cần Thơ" 
+                class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 focus:border-teal-500/80 focus:bg-white rounded-xl text-sm focus:outline-none focus:ring-4 focus:ring-teal-500/5 transition font-medium"
               />
             </div>
-            <div>
-              <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Email liên hệ</label>
-              <input 
-                v-model="form.contactEmail"
-                type="email" 
-                placeholder="info@dia-diem.com" 
-                class="w-full px-4 py-2.5 bg-slate-50/50 border border-slate-200 focus:border-teal-500/85 focus:bg-white rounded-xl text-sm focus:outline-none transition"
-              />
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Điện thoại liên hệ</label>
+                <input 
+                  v-model="form.contactPhone"
+                  type="text" 
+                  placeholder="0292xxxxxx" 
+                  class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 focus:border-teal-500/80 focus:bg-white rounded-xl text-sm focus:outline-none focus:ring-4 focus:ring-teal-500/5 transition font-mono"
+                />
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Email liên hệ</label>
+                <input 
+                  v-model="form.contactEmail"
+                  type="email" 
+                  placeholder="info@dia-diem.com" 
+                  class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 focus:border-teal-500/80 focus:bg-white rounded-xl text-sm focus:outline-none focus:ring-4 focus:ring-teal-500/5 transition font-mono"
+                />
+              </div>
             </div>
-          </div>
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Website URL</label>
-              <input 
-                v-model="form.websiteUrl"
-                type="url" 
-                placeholder="https://dia-diem.com" 
-                class="w-full px-4 py-2.5 bg-slate-50/50 border border-slate-200 focus:border-teal-500/85 focus:bg-white rounded-xl text-sm focus:outline-none transition font-mono text-xs"
-              />
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Website URL</label>
+                <input 
+                  v-model="form.websiteUrl"
+                  type="url" 
+                  placeholder="https://dia-diem.com" 
+                  class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 focus:border-teal-500/80 focus:bg-white rounded-xl text-sm focus:outline-none focus:ring-4 focus:ring-teal-500/5 transition font-mono text-xs"
+                />
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Facebook URL</label>
+                <input 
+                  v-model="form.facebookUrl"
+                  type="url" 
+                  placeholder="https://facebook.com/dia-diem" 
+                  class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 focus:border-teal-500/80 focus:bg-white rounded-xl text-sm focus:outline-none focus:ring-4 focus:ring-teal-500/5 transition font-mono text-xs"
+                />
+              </div>
             </div>
-            <div>
-              <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Facebook URL</label>
-              <input 
-                v-model="form.facebookUrl"
-                type="url" 
-                placeholder="https://facebook.com/dia-diem" 
-                class="w-full px-4 py-2.5 bg-slate-50/50 border border-slate-200 focus:border-teal-500/85 focus:bg-white rounded-xl text-sm focus:outline-none transition font-mono text-xs"
-              />
-            </div>
-          </div>
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Giờ mở cửa</label>
-              <input 
-                v-model="form.openingHours"
-                type="text" 
-                placeholder="Ví dụ: 07:00 - 18:00 hàng ngày" 
-                class="w-full px-4 py-2.5 bg-slate-50/50 border border-slate-200 focus:border-teal-500/85 focus:bg-white rounded-xl text-sm focus:outline-none transition"
-              />
-            </div>
-            <div>
-              <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Giá vé tham khảo</label>
-              <input 
-                v-model="form.ticketPrice"
-                type="text" 
-                placeholder="Ví dụ: Miễn phí hoặc 50.000đ/vé" 
-                class="w-full px-4 py-2.5 bg-slate-50/50 border border-slate-200 focus:border-teal-500/85 focus:bg-white rounded-xl text-sm focus:outline-none transition"
-              />
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Giờ mở cửa</label>
+                <input 
+                  v-model="form.openingHours"
+                  type="text" 
+                  placeholder="Ví dụ: 07:00 - 18:00 hàng ngày" 
+                  class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 focus:border-teal-500/80 focus:bg-white rounded-xl text-sm focus:outline-none focus:ring-4 focus:ring-teal-500/5 transition font-medium"
+                />
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Giá vé tham khảo</label>
+                <input 
+                  v-model="form.ticketPrice"
+                  type="text" 
+                  placeholder="Ví dụ: Miễn phí hoặc 50.000đ/vé" 
+                  class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 focus:border-teal-500/80 focus:bg-white rounded-xl text-sm focus:outline-none focus:ring-4 focus:ring-teal-500/5 transition font-medium"
+                />
+              </div>
             </div>
           </div>
         </div>
@@ -194,12 +207,12 @@
       <!-- Right side: Geographic Coordinate Bindings & Map Picker (5 columns) -->
       <div class="lg:col-span-5 space-y-6">
         <!-- Coordinate Card Input fields -->
-        <div class="bg-white p-6 rounded-2xl border border-slate-200/60 shadow-sm space-y-4">
-          <h3 class="text-sm font-bold text-slate-800 uppercase tracking-wider border-b border-slate-100 pb-3">Tọa độ địa lý</h3>
+        <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm space-y-4">
+          <h3 class="text-xs font-black text-slate-400 uppercase tracking-wider border-b border-slate-100 pb-3">Tọa độ địa lý</h3>
           
           <div class="grid grid-cols-2 gap-4">
             <div>
-              <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Vĩ độ (Latitude) *</label>
+              <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Vĩ độ (Latitude) *</label>
               <input 
                 v-model.number="form.latitude"
                 type="number" 
@@ -207,11 +220,11 @@
                 min="-90"
                 max="90"
                 required
-                class="w-full px-3 py-2.5 bg-slate-50/50 border border-slate-200 focus:border-teal-500/85 focus:bg-white rounded-xl text-sm focus:outline-none transition font-mono"
+                class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 focus:border-teal-500/80 focus:bg-white rounded-xl text-sm focus:outline-none focus:ring-4 focus:ring-teal-500/5 transition font-mono font-semibold"
               />
             </div>
             <div>
-              <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Kinh độ (Longitude) *</label>
+              <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Kinh độ (Longitude) *</label>
               <input 
                 v-model.number="form.longitude"
                 type="number" 
@@ -219,7 +232,7 @@
                 min="-180"
                 max="180"
                 required
-                class="w-full px-3 py-2.5 bg-slate-50/50 border border-slate-200 focus:border-teal-500/85 focus:bg-white rounded-xl text-sm focus:outline-none transition font-mono"
+                class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 focus:border-teal-500/80 focus:bg-white rounded-xl text-sm focus:outline-none focus:ring-4 focus:ring-teal-500/5 transition font-mono font-semibold"
               />
             </div>
           </div>
@@ -235,8 +248,8 @@
         </div>
 
         <!-- Cover Image Card -->
-        <div class="bg-white p-6 rounded-2xl border border-slate-200/60 shadow-sm space-y-4">
-          <h3 class="text-sm font-bold text-slate-800 uppercase tracking-wider border-b border-slate-100 pb-3">Ảnh đại diện (Cover Image)</h3>
+        <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm space-y-4">
+          <h3 class="text-xs font-black text-slate-400 uppercase tracking-wider border-b border-slate-100 pb-3">Ảnh đại diện (Cover Image)</h3>
           
           <!-- Image Preview Area -->
           <div class="relative w-full aspect-[16/10] rounded-xl overflow-hidden border border-slate-200 bg-slate-50 flex flex-col items-center justify-center group">
@@ -302,8 +315,8 @@
         </div>
 
         <!-- Publishing configurations -->
-        <div class="bg-white p-6 rounded-2xl border border-slate-200/60 shadow-sm space-y-4">
-          <h3 class="text-sm font-bold text-slate-800 uppercase tracking-wider border-b border-slate-100 pb-3">Cấu hình hiển thị</h3>
+        <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm space-y-4">
+          <h3 class="text-xs font-black text-slate-400 uppercase tracking-wider border-b border-slate-100 pb-3">Cấu hình hiển thị</h3>
           <div>
             <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Trạng thái xuất bản</label>
             <div class="flex items-center space-x-6">

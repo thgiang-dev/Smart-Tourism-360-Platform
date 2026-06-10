@@ -1,16 +1,18 @@
 <template>
   <div class="space-y-6">
     <!-- Header Page Title & Upload Control -->
-    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-6 rounded-2xl border border-slate-200/60 shadow-sm">
-      <div class="space-y-1">
-        <h2 class="text-lg font-bold text-slate-800">Thư viện Media</h2>
-        <p class="text-xs text-slate-500">Quản lý và tải lên hình ảnh, video, hướng dẫn âm thanh và ảnh toàn cảnh 360°.</p>
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-gradient-to-r from-slate-900 via-slate-800 to-teal-950 p-6 md:p-8 rounded-3xl text-white shadow-xl relative overflow-hidden">
+      <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px]"></div>
+      <div class="absolute w-48 h-48 rounded-full bg-teal-500/10 blur-2xl -bottom-10 -right-10 pointer-events-none"></div>
+      <div class="relative z-10 space-y-1">
+        <h2 class="text-xl md:text-2xl font-black tracking-tight">Thư viện Media</h2>
+        <p class="text-xs text-teal-200/70 font-medium">Quản lý và tải lên hình ảnh, video, hướng dẫn âm thanh và ảnh toàn cảnh 360°.</p>
       </div>
       <button 
         @click="showUploadZone = !showUploadZone"
-        class="inline-flex items-center space-x-2 px-4 py-2.5 bg-teal-500 hover:bg-teal-600 text-slate-950 font-bold rounded-xl shadow-lg hover:shadow-teal-500/10 active:scale-[0.98] transition duration-150"
+        class="premium-btn inline-flex items-center space-x-2 px-5 py-3 bg-amber-500 hover:bg-amber-600 text-slate-950 font-black text-sm rounded-xl shadow-lg shadow-amber-500/15 hover:shadow-amber-500/25 active:scale-[0.98] transition relative z-10"
       >
-        <UploadIcon class="w-4 h-4" />
+        <UploadIcon class="w-4 h-4 stroke-[3]" />
         <span>{{ showUploadZone ? 'Ẩn bảng tải lên' : 'Tải lên tập tin' }}</span>
       </button>
     </div>
@@ -18,15 +20,15 @@
     <!-- Drag & Drop Upload Zone -->
     <div 
       v-if="showUploadZone" 
-      class="bg-white p-6 rounded-2xl border border-slate-200/60 shadow-sm space-y-4"
+      class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm space-y-4 animate-fade-in"
     >
       <div 
         @dragover.prevent="dragOver = true"
         @dragleave.prevent="dragOver = false"
         @drop.prevent="handleFileDrop"
         :class="[
-          'border-2 border-dashed rounded-xl p-8 text-center transition cursor-pointer flex flex-col items-center justify-center space-y-3',
-          dragOver ? 'border-teal-500 bg-teal-50/20' : 'border-slate-200 hover:border-slate-300 bg-slate-50/50'
+          'border-2 border-dashed rounded-xl p-8 text-center transition duration-200 cursor-pointer flex flex-col items-center justify-center space-y-3',
+          dragOver ? 'border-teal-500 bg-teal-50/25 shadow-inner' : 'border-slate-200 hover:border-slate-350 bg-slate-50/50'
         ]"
         @click="triggerFileInput"
       >
@@ -37,39 +39,39 @@
           class="hidden" 
           @change="handleFileSelect"
         />
-        <div class="p-4 bg-white text-teal-600 rounded-2xl border border-teal-100/50 shadow-sm">
-          <UploadCloudIcon class="w-8 h-8 animate-bounce" />
+        <div class="p-4 bg-white text-teal-600 rounded-2xl border border-teal-150 shadow-inner">
+          <UploadCloudIcon class="w-8 h-8 text-teal-650 animate-pulse" />
         </div>
         <div class="space-y-1">
-          <p class="text-sm font-bold text-slate-700">Kéo thả các tập tin vào đây hoặc click để duyệt</p>
-          <p class="text-xs text-slate-400">Hỗ trợ: Hình ảnh (JPG, PNG, WebP), 360° (Panorama), Video (MP4), Âm thanh (MP3, WAV)</p>
-          <p class="text-[11px] text-slate-400">Giới hạn dung lượng: Ảnh & Âm thanh &lt; 10MB | Panorama &lt; 15MB | Video &lt; 50MB</p>
+          <p class="text-sm font-black text-slate-700">Kéo thả các tập tin vào đây hoặc click để duyệt</p>
+          <p class="text-xs text-slate-400 font-medium">Hỗ trợ: Hình ảnh (JPG, PNG, WebP), 360° (Panorama), Video (MP4), Âm thanh (MP3, WAV)</p>
+          <p class="text-[11px] text-slate-450 font-semibold">Giới hạn dung lượng: Ảnh & Âm thanh &lt; 10MB | Panorama &lt; 15MB | Video &lt; 50MB</p>
         </div>
       </div>
 
       <!-- Upload Queue progress list -->
-      <div v-if="uploadQueue.length > 0" class="border border-slate-100 rounded-xl overflow-hidden divide-y divide-slate-100 bg-slate-50/30">
-        <div class="p-3 bg-slate-50 text-xs font-bold text-slate-500 flex justify-between items-center">
+      <div v-if="uploadQueue.length > 0" class="border border-slate-200/80 rounded-xl overflow-hidden divide-y divide-slate-100 bg-slate-50/30">
+        <div class="p-3.5 bg-slate-50 text-xs font-black text-slate-500 flex justify-between items-center border-b border-slate-100">
           <span>Tiến trình tải lên ({{ completedUploadsCount }}/{{ uploadQueue.length }})</span>
-          <button @click="clearUploadQueue" class="text-red-500 hover:text-red-600 transition">Xóa danh sách</button>
+          <button @click="clearUploadQueue" class="text-rose-500 hover:text-rose-600 font-bold transition">Xóa danh sách</button>
         </div>
         <div 
           v-for="(item, idx) in uploadQueue" 
           :key="idx" 
-          class="p-4 flex items-center justify-between text-sm gap-4"
+          class="p-4 flex items-center justify-between text-sm gap-4 bg-white"
         >
           <div class="flex items-center space-x-3 min-w-0 flex-1">
             <!-- Icon by extensions -->
-            <ImageIcon v-if="isImageType(item.name)" class="w-5 h-5 text-teal-500 flex-shrink-0" />
-            <FilmIcon v-else-if="isVideoType(item.name)" class="w-5 h-5 text-rose-500 flex-shrink-0" />
-            <MusicIcon v-else-if="isAudioType(item.name)" class="w-5 h-5 text-indigo-500 flex-shrink-0" />
+            <ImageIcon v-if="isImageType(item.name)" class="w-5 h-5 text-teal-600 flex-shrink-0" />
+            <FilmIcon v-else-if="isVideoType(item.name)" class="w-5 h-5 text-rose-550 flex-shrink-0" />
+            <MusicIcon v-else-if="isAudioType(item.name)" class="w-5 h-5 text-indigo-550 flex-shrink-0" />
             <FileIcon v-else class="w-5 h-5 text-slate-400 flex-shrink-0" />
 
-            <div class="min-w-0 flex-1 space-y-1">
+            <div class="min-w-0 flex-1 space-y-1.5">
               <p class="text-xs font-bold text-slate-700 truncate" :title="item.name">{{ item.name }}</p>
-              <div class="w-full bg-slate-200/60 rounded-full h-1.5 overflow-hidden">
+              <div class="w-full bg-slate-200/70 rounded-full h-1.5 overflow-hidden">
                 <div 
-                  class="bg-teal-500 h-1.5 transition-all duration-300" 
+                  class="bg-teal-600 h-1.5 transition-all duration-300 rounded-full" 
                   :style="{ width: `${item.progress}%` }"
                 ></div>
               </div>
@@ -77,25 +79,25 @@
           </div>
           
           <div class="flex items-center space-x-2 flex-shrink-0">
-            <span class="text-xs font-medium text-slate-500">{{ item.progress }}%</span>
+            <span class="text-xs font-bold text-slate-500">{{ item.progress }}%</span>
             
-            <span v-if="item.status === 'success'" class="p-1 bg-green-50 text-green-600 rounded-full">
-              <CheckIcon class="w-4 h-4" />
+            <span v-if="item.status === 'success'" class="p-1 bg-emerald-50 text-emerald-600 rounded-full border border-emerald-100">
+              <CheckIcon class="w-3.5 h-3.5 stroke-[2.5]" />
             </span>
-            <span v-else-if="item.status === 'error'" class="p-1 bg-red-50 text-red-600 rounded-full" :title="item.errorMessage">
-              <AlertCircleIcon class="w-4 h-4" />
+            <span v-else-if="item.status === 'error'" class="p-1 bg-red-50 text-red-600 rounded-full border border-red-100" :title="item.errorMessage">
+              <AlertCircleIcon class="w-3.5 h-3.5 stroke-[2.5]" />
             </span>
             <span v-else-if="item.status === 'uploading'" class="p-1 text-teal-600">
-              <Loader2Icon class="w-4 h-4 animate-spin" />
+              <Loader2Icon class="w-3.5 h-3.5 animate-spin" />
             </span>
-            <span v-else class="text-xs text-slate-400">Đang chờ</span>
+            <span v-else class="text-xs text-slate-400 font-bold">Đang chờ</span>
           </div>
         </div>
       </div>
     </div>
 
     <!-- Media Tabs Filter & Search -->
-    <div class="flex flex-col md:flex-row gap-4 items-start md:items-center justify-between bg-white p-4 rounded-2xl border border-slate-200/60 shadow-sm">
+    <div class="flex flex-col md:flex-row gap-4 items-start md:items-center justify-between bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm">
       <!-- Media category types tabs -->
       <div class="flex flex-wrap gap-1 p-1 bg-slate-100 rounded-xl w-full md:w-auto">
         <button
@@ -105,7 +107,7 @@
           :class="[
             'px-4 py-2 text-xs font-bold rounded-lg transition duration-200 flex-1 md:flex-initial text-center',
             activeTab === tab.value 
-              ? 'bg-white text-slate-900 shadow-sm' 
+              ? 'bg-white text-slate-800 shadow-sm border border-slate-200/20' 
               : 'text-slate-500 hover:text-slate-800'
           ]"
         >
@@ -114,12 +116,12 @@
       </div>
 
       <!-- Quick manual page sizes -->
-      <div class="flex items-center space-x-2 text-xs text-slate-500 font-medium w-full md:w-auto justify-end">
+      <div class="flex items-center space-x-2 text-xs text-slate-500 font-bold w-full md:w-auto justify-end">
         <span>Hiển thị:</span>
         <select 
           v-model="pageSize" 
           @change="handlePageSizeChange"
-          class="bg-slate-50 border border-slate-200 rounded-lg px-2 py-1 text-slate-700 focus:outline-none"
+          class="bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1 text-slate-700 focus:outline-none focus:border-teal-500 cursor-pointer"
         >
           <option :value="12">12</option>
           <option :value="24">24</option>
@@ -130,13 +132,13 @@
 
     <!-- Error state -->
     <div v-if="error" class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl flex items-center space-x-3">
-      <AlertCircleIcon class="w-5 h-5 flex-shrink-0" />
-      <span class="text-sm font-medium">{{ error }}</span>
+      <AlertCircleIcon class="w-5 h-5 flex-shrink-0 text-red-500" />
+      <span class="text-sm font-semibold">{{ error }}</span>
     </div>
 
     <!-- Loading grid state -->
     <div v-if="loading" class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-6">
-      <div v-for="i in pageSize" :key="i" class="bg-white rounded-2xl border border-slate-100 p-3 space-y-3 animate-pulse shadow-sm">
+      <div v-for="i in pageSize" :key="i" class="bg-white rounded-2xl border border-slate-200/60 p-3 space-y-3 animate-pulse shadow-sm">
         <div class="aspect-square bg-slate-100 rounded-xl w-full"></div>
         <div class="h-4 bg-slate-100 rounded w-3/4"></div>
         <div class="h-3 bg-slate-100 rounded w-1/2"></div>
@@ -146,13 +148,13 @@
     <!-- Empty library state -->
     <div 
       v-else-if="mediaFiles.length === 0" 
-      class="bg-white py-16 text-center rounded-2xl border border-slate-200/60 shadow-sm space-y-4"
+      class="bg-white py-16 text-center rounded-2xl border border-slate-200/80 shadow-sm space-y-4"
     >
       <div class="inline-flex p-4 bg-slate-50 text-slate-400 rounded-full border border-slate-100">
         <InboxIcon class="w-10 h-10" />
       </div>
       <div class="space-y-1">
-        <h3 class="text-base font-bold text-slate-700">Chưa có tập tin media nào</h3>
+        <h3 class="text-base font-black text-slate-700">Chưa có tập tin media nào</h3>
         <p class="text-xs text-slate-500 max-w-sm mx-auto">Tải lên các ảnh, video, audio đầu tiên để sử dụng làm tư liệu hiển thị.</p>
       </div>
       <button 
@@ -168,7 +170,7 @@
       <div 
         v-for="m in mediaFiles" 
         :key="m.id" 
-        class="bg-white rounded-2xl border border-slate-200/60 hover:border-teal-500/50 shadow-sm overflow-hidden flex flex-col group hover:shadow-md cursor-pointer transition duration-200"
+        class="premium-card bg-white rounded-2xl border border-slate-200/80 hover:border-teal-500/40 shadow-sm overflow-hidden flex flex-col group hover:shadow-md cursor-pointer transition duration-200"
         @click="openDetailModal(m)"
       >
         <!-- Preview Container -->
@@ -184,7 +186,7 @@
             <!-- 360 Badge for Panorama -->
             <span 
               v-if="m.mediaType === 'panorama'" 
-              class="absolute top-2 right-2 px-1.5 py-0.5 bg-slate-900/80 text-[9px] font-black tracking-wider text-teal-400 rounded uppercase"
+              class="absolute top-2 right-2 px-2 py-0.5 bg-slate-950/80 backdrop-blur-sm text-[9px] font-black tracking-wider text-teal-400 rounded-md uppercase"
             >
               360° Pano
             </span>
@@ -193,11 +195,11 @@
           <!-- VIDEO -->
           <template v-else-if="m.mediaType === 'video'">
             <div class="w-full h-full flex flex-col items-center justify-center bg-slate-900/5 text-slate-500 group-hover:text-rose-500 transition">
-              <FilmIcon class="w-8 h-8" />
+              <FilmIcon class="w-8 h-8 stroke-[1.5]" />
               <span class="text-[10px] text-slate-400 font-bold uppercase mt-1">Video</span>
             </div>
             <!-- Video Badge -->
-            <span class="absolute top-2 right-2 px-1.5 py-0.5 bg-slate-900/80 text-[9px] font-black tracking-wider text-rose-400 rounded uppercase">
+            <span class="absolute top-2 right-2 px-2 py-0.5 bg-slate-950/80 backdrop-blur-sm text-[9px] font-black tracking-wider text-rose-450 rounded-md uppercase">
               {{ getFileExt(m.fileName) }}
             </span>
           </template>
@@ -205,11 +207,11 @@
           <!-- AUDIO -->
           <template v-else-if="m.mediaType === 'audio'">
             <div class="w-full h-full flex flex-col items-center justify-center bg-slate-900/5 text-slate-500 group-hover:text-indigo-500 transition">
-              <MusicIcon class="w-8 h-8" />
+              <MusicIcon class="w-8 h-8 stroke-[1.5]" />
               <span class="text-[10px] text-slate-400 font-bold uppercase mt-1">Audio</span>
             </div>
             <!-- Audio Badge -->
-            <span class="absolute top-2 right-2 px-1.5 py-0.5 bg-slate-900/80 text-[9px] font-black tracking-wider text-indigo-400 rounded uppercase">
+            <span class="absolute top-2 right-2 px-2 py-0.5 bg-slate-955/80 backdrop-blur-sm text-[9px] font-black tracking-wider text-indigo-450 rounded-md uppercase">
               {{ getFileExt(m.fileName) }}
             </span>
           </template>
@@ -225,7 +227,7 @@
           <!-- Cover Image Indicators (Shows if destination uses this image as cover) -->
           <span 
             v-if="m.isCover"
-            class="absolute bottom-2 left-2 px-2 py-0.5 bg-teal-500 text-slate-950 font-bold text-[9px] rounded-full shadow-sm"
+            class="absolute bottom-2 left-2 px-2 py-0.5 bg-teal-500 text-slate-950 font-black text-[9px] rounded-full shadow-sm"
           >
             Ảnh bìa
           </span>
@@ -236,7 +238,7 @@
           <p class="text-xs font-bold text-slate-700 truncate" :title="m.caption || m.fileName">
             {{ m.caption || m.fileName }}
           </p>
-          <div class="flex items-center justify-between text-[10px] text-slate-400 font-medium">
+          <div class="flex items-center justify-between text-[10px] text-slate-400 font-semibold">
             <span>{{ formatBytes(m.fileSize) }}</span>
             <span class="font-mono text-[9px] uppercase">{{ m.extension.replace('.', '') }}</span>
           </div>
@@ -247,23 +249,23 @@
     <!-- Pagination controls -->
     <div 
       v-if="mediaFiles.length > 0" 
-      class="bg-white px-6 py-4 rounded-2xl border border-slate-200/60 shadow-sm flex flex-col sm:flex-row justify-between items-center gap-4"
+      class="bg-white px-6 py-4 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col sm:flex-row justify-between items-center gap-4"
     >
-      <span class="text-xs text-slate-500 font-medium">
+      <span class="text-xs text-slate-500 font-bold">
         Hiển thị trang {{ currentPage }}/{{ totalPages }} (Tổng {{ totalItems }} kết quả)
       </span>
       <div class="flex items-center space-x-2">
         <button 
           @click="prevPage" 
           :disabled="currentPage === 1"
-          class="px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-xs font-semibold text-slate-600 hover:bg-slate-50 active:scale-[0.98] transition disabled:opacity-40 disabled:cursor-not-allowed"
+          class="premium-btn px-4 py-2 bg-white border border-slate-200 rounded-xl text-xs font-bold text-slate-600 hover:bg-slate-50 active:scale-[0.98] transition disabled:opacity-40 disabled:cursor-not-allowed shadow-sm"
         >
           Trang trước
         </button>
         <button 
           @click="nextPage" 
           :disabled="currentPage === totalPages || totalPages === 0"
-          class="px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-xs font-semibold text-slate-600 hover:bg-slate-50 active:scale-[0.98] transition disabled:opacity-40 disabled:cursor-not-allowed"
+          class="premium-btn px-4 py-2 bg-white border border-slate-200 rounded-xl text-xs font-bold text-slate-600 hover:bg-slate-50 active:scale-[0.98] transition disabled:opacity-40 disabled:cursor-not-allowed shadow-sm"
         >
           Trang sau
         </button>
@@ -276,7 +278,7 @@
       class="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4"
       @click.self="closeDetailModal"
     >
-      <div class="bg-white rounded-2xl w-full max-w-4xl shadow-2xl border border-slate-100 overflow-hidden flex flex-col md:flex-row max-h-[90vh]">
+      <div class="bg-white rounded-3xl w-full max-w-4xl shadow-2xl border border-slate-100 overflow-hidden flex flex-col md:flex-row max-h-[90vh] animate-scale-up">
         
         <!-- Left half: Preview Block (45%) -->
         <div class="md:w-1/2 bg-slate-950 p-6 flex flex-col items-center justify-center min-h-[300px] md:min-h-0 relative">
@@ -292,14 +294,14 @@
           <img 
             v-if="selectedMedia.mediaType === 'image' || selectedMedia.mediaType === 'panorama'"
             :src="selectedMedia.fileUrl" 
-            class="max-w-full max-h-[50vh] md:max-h-[60vh] object-contain rounded-lg"
+            class="max-w-full max-h-[50vh] md:max-h-[60vh] object-contain rounded-xl shadow-lg border border-white/5"
           />
 
           <!-- VIDEO PREVIEW -->
           <video 
             v-else-if="selectedMedia.mediaType === 'video'" 
             controls 
-            class="max-w-full max-h-[50vh] md:max-h-[60vh] rounded-lg shadow-lg"
+            class="max-w-full max-h-[50vh] md:max-h-[60vh] rounded-xl shadow-lg border border-white/5"
             :src="selectedMedia.fileUrl"
           ></video>
 
@@ -308,16 +310,16 @@
             v-else-if="selectedMedia.mediaType === 'audio'"
             class="text-center space-y-4 w-full px-6 py-10"
           >
-            <div class="w-20 h-20 bg-teal-500/10 text-teal-400 rounded-full flex items-center justify-center mx-auto border border-teal-500/20">
+            <div class="w-20 h-20 bg-teal-500/10 text-teal-400 rounded-full flex items-center justify-center mx-auto border border-teal-550/20">
               <MusicIcon class="w-10 h-10 animate-pulse" />
             </div>
             <div class="space-y-1">
               <p class="text-sm font-bold text-white truncate max-w-xs mx-auto">{{ selectedMedia.fileName }}</p>
-              <p class="text-xs text-slate-400">Audio Player Guide</p>
+              <p class="text-xs text-slate-400 font-medium">Bản ghi hướng dẫn âm thanh</p>
             </div>
             <audio 
               controls 
-              class="w-full mx-auto shadow-md"
+              class="w-full mx-auto shadow-md rounded-lg"
               :src="selectedMedia.fileUrl"
             ></audio>
           </div>
@@ -332,14 +334,14 @@
         <!-- Right half: Detailed Metadata & Action Form (55%) -->
         <div class="md:w-1/2 p-6 md:p-8 flex flex-col justify-between overflow-y-auto max-h-[90vh]">
           <!-- Header -->
-          <div class="flex justify-between items-start">
+          <div class="flex justify-between items-start border-b border-slate-100 pb-4">
             <div class="space-y-1">
-              <h3 class="text-base font-bold text-slate-800">Chi tiết tập tin</h3>
-              <p class="text-xs text-slate-500">Xem thông số kỹ thuật và chỉnh sửa mô tả hiển thị.</p>
+              <h3 class="text-base font-black text-slate-800">Chi tiết tập tin</h3>
+              <p class="text-xs text-slate-500 font-medium">Xem thông số kỹ thuật và chỉnh sửa mô tả hiển thị.</p>
             </div>
             <button 
               @click="closeDetailModal"
-              class="hidden md:block p-1.5 hover:bg-slate-100 rounded-lg text-slate-400 hover:text-slate-600 transition"
+              class="hidden md:block p-2 hover:bg-slate-100 rounded-xl text-slate-400 hover:text-slate-600 transition"
             >
               <XIcon class="w-5 h-5" />
             </button>
@@ -347,67 +349,67 @@
 
           <!-- Details fields info list -->
           <div class="mt-6 space-y-4 text-xs">
-            <div class="grid grid-cols-3 gap-2 py-1 border-b border-slate-100">
-              <span class="text-slate-400 font-medium">Tên file gốc:</span>
+            <div class="grid grid-cols-3 gap-2 py-1.5 border-b border-slate-100">
+              <span class="text-slate-400 font-bold uppercase tracking-wider">Tên file gốc:</span>
               <span class="col-span-2 font-bold text-slate-700 break-all">{{ selectedMedia.fileName }}</span>
             </div>
-            <div class="grid grid-cols-3 gap-2 py-1 border-b border-slate-100">
-              <span class="text-slate-400 font-medium">Loại tệp tin:</span>
+            <div class="grid grid-cols-3 gap-2 py-1.5 border-b border-slate-100">
+              <span class="text-slate-400 font-bold uppercase tracking-wider">Loại tệp tin:</span>
               <span class="col-span-2 font-bold text-slate-700 capitalize font-mono text-[10px]">{{ selectedMedia.mediaType }} ({{ selectedMedia.mimeType }})</span>
             </div>
-            <div class="grid grid-cols-3 gap-2 py-1 border-b border-slate-100">
-              <span class="text-slate-400 font-medium">Kích thước:</span>
+            <div class="grid grid-cols-3 gap-2 py-1.5 border-b border-slate-100">
+              <span class="text-slate-400 font-bold uppercase tracking-wider">Kích thước:</span>
               <span class="col-span-2 font-bold text-slate-700">{{ formatBytes(selectedMedia.fileSize) }}</span>
             </div>
-            <div v-if="selectedMedia.width && selectedMedia.height" class="grid grid-cols-3 gap-2 py-1 border-b border-slate-100">
-              <span class="text-slate-400 font-medium">Độ phân giải:</span>
+            <div v-if="selectedMedia.width && selectedMedia.height" class="grid grid-cols-3 gap-2 py-1.5 border-b border-slate-100">
+              <span class="text-slate-400 font-bold uppercase tracking-wider">Độ phân giải:</span>
               <span class="col-span-2 font-bold text-slate-700 font-mono">{{ selectedMedia.width }} x {{ selectedMedia.height }} px</span>
             </div>
-            <div class="grid grid-cols-3 gap-2 py-1 border-b border-slate-100">
-              <span class="text-slate-400 font-medium">Ngày tải lên:</span>
+            <div class="grid grid-cols-3 gap-2 py-1.5 border-b border-slate-100">
+              <span class="text-slate-400 font-bold uppercase tracking-wider">Ngày tải lên:</span>
               <span class="col-span-2 font-bold text-slate-700">{{ formatDate(selectedMedia.createdAt) }}</span>
             </div>
             
             <!-- URL copy component -->
             <div class="space-y-1.5 pt-2">
-              <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider">Đường dẫn công khai (URL)</label>
+              <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider">Đường dẫn công khai (URL)</label>
               <div class="flex items-center space-x-2">
                 <input 
                   type="text" 
                   readonly 
                   :value="selectedMedia.fileUrl" 
-                  class="flex-1 bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-slate-600 focus:outline-none font-mono text-[11px]"
+                  class="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-600 focus:outline-none font-mono text-[11px]"
                 />
                 <button 
                   @click="copyUrlToClipboard(selectedMedia.fileUrl)"
-                  class="p-2 border border-slate-200 rounded-lg hover:bg-slate-50 text-slate-500 active:scale-[0.98] transition flex items-center justify-center"
+                  class="premium-btn p-2 border border-slate-200 rounded-xl hover:bg-slate-50 text-slate-500 active:scale-[0.98] transition flex items-center justify-center"
                   :title="copied ? 'Đã sao chép!' : 'Sao chép URL'"
                 >
-                  <CheckIcon v-if="copied" class="w-4 h-4 text-green-500" />
+                  <CheckIcon v-if="copied" class="w-4 h-4 text-green-500 stroke-[2.5]" />
                   <CopyIcon v-else class="w-4 h-4" />
                 </button>
               </div>
             </div>
 
             <!-- Form Edit Metadata Fields -->
-            <div class="space-y-3 pt-3 border-t border-slate-100">
+            <div class="space-y-3 pt-4 border-t border-slate-100">
               <div class="space-y-1.5">
-                <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider">Alt Text (Mô tả nội dung cho SEO) *</label>
+                <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider">Alt Text (Mô tả SEO) *</label>
                 <input 
                   v-model="metaForm.altText"
                   type="text" 
                   placeholder="Ví dụ: Cận cảnh cổng tam quan chùa cổ..."
-                  class="w-full px-3 py-2 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-teal-500"
+                  class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 focus:border-teal-500/85 focus:bg-white rounded-xl text-sm focus:outline-none focus:ring-4 focus:ring-teal-500/5 transition font-medium"
                 />
               </div>
 
               <div class="space-y-1.5">
-                <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider">Chú thích hiển thị (Caption)</label>
+                <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider">Chú thích hiển thị (Caption)</label>
                 <textarea 
                   v-model="metaForm.caption"
                   rows="2"
-                  placeholder="Chú thích hiển thị dưới ảnh trong bộ sưu tập hoặc bài viết..."
-                  class="w-full px-3 py-2 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-teal-500 resize-none"
+                  placeholder="Chú thích hiển thị dưới ảnh..."
+                  class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 focus:border-teal-500/85 focus:bg-white rounded-xl text-sm focus:outline-none focus:ring-4 focus:ring-teal-500/5 transition resize-none font-medium"
                 ></textarea>
               </div>
             </div>
@@ -418,7 +420,7 @@
             <!-- Delete Button -->
             <button 
               @click="confirmDeleteMedia(selectedMedia)"
-              class="px-4 py-2.5 border border-red-200 hover:bg-red-50 text-red-600 font-bold rounded-xl text-xs active:scale-[0.98] transition flex items-center space-x-1.5"
+              class="premium-btn px-4 py-2.5 border border-rose-200 hover:bg-rose-50 text-rose-600 font-bold rounded-xl text-xs active:scale-[0.98] transition flex items-center space-x-1.5"
               :disabled="updatingMeta"
             >
               <TrashIcon class="w-4 h-4" />
@@ -428,14 +430,14 @@
             <div class="flex items-center space-x-2">
               <button 
                 @click="closeDetailModal"
-                class="px-4 py-2.5 border border-slate-200 hover:bg-slate-50 text-slate-500 font-bold rounded-xl text-xs transition"
+                class="premium-btn px-4 py-2.5 border border-slate-200 hover:bg-slate-50 text-slate-500 font-bold rounded-xl text-xs transition"
                 :disabled="updatingMeta"
               >
                 Hủy bỏ
               </button>
               <button 
                 @click="saveMetadata"
-                class="px-4 py-2.5 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-xl text-xs shadow-lg flex items-center space-x-1.5 disabled:opacity-50"
+                class="premium-btn px-4 py-2.5 bg-teal-700 hover:bg-teal-850 text-white font-bold rounded-xl text-xs shadow-md shadow-teal-750/15 flex items-center space-x-1.5 disabled:opacity-50"
                 :disabled="updatingMeta"
               >
                 <Loader2Icon v-if="updatingMeta" class="w-4 h-4 animate-spin" />

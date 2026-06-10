@@ -1,5 +1,5 @@
 <template>
-  <div class="h-screen flex flex-col overflow-hidden bg-slate-50">
+  <div class="h-screen flex flex-col overflow-hidden bg-slate-50 font-sans">
     <!-- Header -->
     <PublicHeader />
 
@@ -9,53 +9,49 @@
       <!-- Sidebar Panel Left (30%) -->
       <aside class="w-full md:w-80 lg:w-96 bg-white border-r border-slate-200 flex flex-col z-20 flex-shrink-0 shadow-sm">
         <!-- Sidebar Search Form -->
-        <div class="p-4 border-b border-slate-100 space-y-3">
+        <div class="p-5 border-b border-slate-100 space-y-4">
           <div class="relative">
             <input 
               v-model="searchKeyword"
               type="text" 
               placeholder="Tìm kiếm địa điểm..." 
-              class="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 focus:border-teal-500/80 focus:bg-white rounded-xl text-xs focus:outline-none transition"
+              class="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 focus:border-teal-500 focus:bg-white rounded-2xl text-xs focus:outline-none transition duration-200"
               @input="onFilterChange"
             />
-            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
-              <SearchIcon class="w-4 h-4" />
+            <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400">
+              <SearchIcon class="w-4 h-4 text-slate-400" />
             </span>
           </div>
 
           <!-- Feature filter toggles -->
           <div class="flex items-center justify-between text-xs px-1">
-            <span class="text-slate-500 font-bold">Chỉ có Tour ảo 360°</span>
+            <span class="text-slate-500 font-extrabold">Chỉ có Tour ảo 360°</span>
             <button 
               @click="toggleTourFilter"
-              :class="[
-                'w-9 h-5 rounded-full p-0.5 transition duration-200 focus:outline-none',
-                filterHasTour ? 'bg-teal-500' : 'bg-slate-200'
-              ]"
+              class="w-10 h-6 rounded-full p-0.5 transition duration-200 focus:outline-none"
+              :class="filterHasTour ? 'bg-teal-600' : 'bg-slate-200'"
             >
               <div 
-                :class="[
-                  'w-4 h-4 bg-white rounded-full shadow-sm transform duration-200',
-                  filterHasTour ? 'translate-x-4' : 'translate-x-0'
-                ]"
+                class="w-5 h-5 bg-white rounded-full shadow-md transform duration-200"
+                :class="filterHasTour ? 'translate-x-4' : 'translate-x-0'"
               ></div>
             </button>
           </div>
         </div>
 
         <!-- Scrollable Sidebar lists -->
-        <div class="flex-grow overflow-y-auto p-4 space-y-4">
+        <div class="flex-grow overflow-y-auto p-5 space-y-6 custom-scrollbar">
           <!-- Categories Filter Chips list -->
-          <div class="space-y-2">
-            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Danh mục</p>
-            <div class="flex flex-wrap gap-1.5">
+          <div class="space-y-3">
+            <p class="text-[10px] font-black text-slate-400 uppercase tracking-wider">Danh mục</p>
+            <div class="flex flex-wrap gap-2">
               <button 
                 @click="selectCategoryChip(null)"
+                class="premium-btn px-3 py-1.5 rounded-xl text-[10px] font-black transition-all border duration-200 shadow-sm"
                 :class="[
-                  'px-2.5 py-1 rounded-lg text-[10px] font-bold transition border',
                   selectedCategory === null 
-                    ? 'bg-teal-600 border-teal-600 text-white shadow-sm' 
-                    : 'bg-slate-50 border-slate-200 text-slate-600 hover:border-slate-350'
+                    ? 'bg-teal-600 border-teal-600 text-white shadow-teal-600/10' 
+                    : 'bg-slate-50 border-slate-200 text-slate-600 hover:border-slate-350 hover:bg-white'
                 ]"
               >
                 Tất cả
@@ -64,11 +60,11 @@
                 v-for="cat in categories" 
                 :key="cat.id"
                 @click="selectCategoryChip(cat.id)"
+                class="premium-btn px-3 py-1.5 rounded-xl text-[10px] font-black transition-all border duration-200 shadow-sm"
                 :class="[
-                  'px-2.5 py-1 rounded-lg text-[10px] font-bold transition border',
                   selectedCategory === cat.id 
-                    ? 'bg-teal-600 border-teal-600 text-white shadow-sm' 
-                    : 'bg-slate-50 border-slate-200 text-slate-600 hover:border-slate-350'
+                    ? 'bg-teal-600 border-teal-600 text-white shadow-teal-600/10' 
+                    : 'bg-slate-50 border-slate-200 text-slate-600 hover:border-slate-350 hover:bg-white'
                 ]"
               >
                 {{ cat.name }}
@@ -77,50 +73,52 @@
           </div>
 
           <!-- Destination lists scroll -->
-          <div class="space-y-3 pt-2">
-            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+          <div class="space-y-4 pt-2">
+            <p class="text-[10px] font-black text-slate-400 uppercase tracking-wider">
               Kết quả tìm kiếm ({{ destinations.length }})
             </p>
 
             <!-- Loading Skeleton -->
             <div v-if="loading" class="space-y-3">
-              <div v-for="i in 3" :key="i" class="flex items-center space-x-3 p-2 bg-slate-50 rounded-xl animate-pulse">
-                <div class="w-16 h-12 bg-slate-100 rounded-lg flex-shrink-0"></div>
-                <div class="space-y-1.5 flex-1">
-                  <div class="h-3.5 bg-slate-100 rounded w-3/4"></div>
-                  <div class="h-2.5 bg-slate-100 rounded w-1/2"></div>
+              <div v-for="i in 4" :key="i" class="flex items-center space-x-3 p-3 bg-slate-50 rounded-2xl animate-pulse">
+                <div class="w-16 h-12 bg-slate-200 rounded-xl flex-shrink-0"></div>
+                <div class="space-y-2 flex-1">
+                  <div class="h-3.5 bg-slate-200 rounded w-3/4"></div>
+                  <div class="h-2.5 bg-slate-200 rounded w-1/2"></div>
                 </div>
               </div>
             </div>
 
             <!-- Empty Results -->
-            <div v-else-if="destinations.length === 0" class="text-center py-12 space-y-2">
-              <InboxIcon class="w-8 h-8 mx-auto text-slate-350" />
-              <p class="text-xs font-bold text-slate-500">Không tìm thấy địa điểm nào</p>
-              <p class="text-[10px] text-slate-400">Thử đặt lại bộ lọc hoặc điều chỉnh từ khóa tìm kiếm</p>
+            <div v-else-if="destinations.length === 0" class="text-center py-16 space-y-4 border border-slate-100 rounded-2xl bg-slate-50/50">
+              <InboxIcon class="w-10 h-10 mx-auto text-slate-300" />
+              <div class="space-y-1">
+                <p class="text-xs font-black text-slate-600">Không tìm thấy địa điểm nào</p>
+                <p class="text-[10px] text-slate-400">Thử đặt lại bộ lọc hoặc điều chỉnh từ khóa</p>
+              </div>
             </div>
 
             <!-- List Results Cards -->
-            <div v-else class="space-y-2.5">
+            <div v-else class="space-y-3">
               <div 
                 v-for="dest in destinations" 
                 :key="dest.id"
-                class="flex space-x-3 p-2.5 bg-slate-50 hover:bg-teal-50/40 border border-slate-200/50 hover:border-teal-500/20 rounded-xl cursor-pointer transition group"
+                class="flex space-x-3 p-3 bg-slate-50 hover:bg-teal-50/40 border border-slate-200/50 hover:border-teal-500/20 rounded-2xl cursor-pointer transition-all duration-300 group"
                 @click="focusDestination(dest)"
               >
                 <!-- Thumbnail -->
-                <div class="w-20 h-14 bg-slate-100 border border-slate-200/50 rounded-lg overflow-hidden flex-shrink-0 relative">
-                  <img v-if="dest.coverImageUrl" :src="dest.coverImageUrl" class="w-full h-full object-cover" />
+                <div class="w-20 h-14 bg-slate-100 border border-slate-200/50 rounded-xl overflow-hidden flex-shrink-0 relative">
+                  <img v-if="dest.coverImageUrl" :src="dest.coverImageUrl" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" />
                   <ImageIcon v-else class="w-5 h-5 text-slate-400 absolute inset-0 m-auto" />
                 </div>
                 
                 <!-- Info text -->
-                <div class="min-w-0 flex-1 space-y-1 flex flex-col justify-between">
+                <div class="min-w-0 flex-1 space-y-1.5 flex flex-col justify-between">
                   <div>
-                    <h4 class="text-xs font-bold text-slate-800 truncate group-hover:text-teal-700 transition">
+                    <h4 class="text-xs font-black text-slate-800 truncate group-hover:text-teal-700 transition">
                       {{ dest.name }}
                     </h4>
-                    <span class="text-[9px] text-slate-400 block font-semibold uppercase tracking-wider">
+                    <span class="text-[9px] text-slate-400 block font-bold uppercase tracking-wider">
                       {{ dest.category?.name }} | {{ dest.regionName }}
                     </span>
                   </div>
@@ -129,13 +127,14 @@
                   <div class="flex items-center space-x-2">
                     <span 
                       v-if="dest.hasVirtualTour" 
-                      class="px-1.5 py-0.5 bg-teal-50 text-teal-600 border border-teal-100 rounded text-[8px] font-bold uppercase tracking-wider"
+                      class="px-2 py-0.5 bg-amber-500 text-slate-950 rounded text-[8px] font-black uppercase tracking-wider shadow-sm flex items-center space-x-0.5 animate-pulse-gold"
                     >
-                      360° Pano
+                      <CompassIcon class="w-2.5 h-2.5" />
+                      <span>360° Tour</span>
                     </span>
                     <span 
                       v-if="dest.hasAudioGuide" 
-                      class="px-1.5 py-0.5 bg-amber-50 text-amber-600 border border-amber-100 rounded text-[8px] font-bold uppercase tracking-wider"
+                      class="px-2 py-0.5 bg-teal-50 text-teal-600 border border-teal-100 rounded text-[8px] font-bold uppercase tracking-wider"
                     >
                       Audio
                     </span>
@@ -154,7 +153,7 @@
         <!-- Center/Reset button overlay on map -->
         <button 
           @click="resetMapZoom" 
-          class="absolute bottom-5 right-5 z-20 p-2.5 bg-white border border-slate-200 rounded-xl text-slate-700 shadow-md hover:bg-slate-50 transition active:scale-95 flex items-center justify-center"
+          class="premium-btn absolute bottom-5 right-5 z-20 p-3 bg-white border border-slate-200 rounded-2xl text-slate-700 shadow-lg hover:bg-slate-50 flex items-center justify-center"
           title="Đặt lại bản đồ"
         >
           <CompassIcon class="w-5 h-5 text-teal-600" />
@@ -271,21 +270,23 @@ const initMap = () => {
 }
 
 // Helper to render customized marker divicon matching category color
-const createMarkerIcon = (color) => {
-  const iconColor = color || '#0d9488' // Default teal
+const createMarkerIcon = (color, hasTour) => {
+  const iconColor = color || '#0F766E' // Default teal
+  const pulseHtml = hasTour ? `<div class="marker-pulse" style="background-color: ${iconColor}"></div>` : ''
   return L.divIcon({
     className: 'custom-div-icon',
     html: `
-      <div class="relative flex items-center justify-center w-8 h-8 rounded-full shadow-lg border-2 border-white text-white transition hover:scale-110 active:scale-95 duration-150" style="background-color: ${iconColor}">
-        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+      <div class="relative flex items-center justify-center w-9 h-9 rounded-full shadow-lg border-2 border-white text-white transition-all duration-300 hover:scale-110 active:scale-95 cursor-pointer" style="background-color: ${iconColor}">
+        ${pulseHtml}
+        <svg class="w-4 h-4 relative z-10" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
           <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
         </svg>
       </div>
     `,
-    iconSize: [32, 32],
-    iconAnchor: [16, 32],
-    popupAnchor: [0, -32]
+    iconSize: [36, 36],
+    iconAnchor: [18, 36],
+    popupAnchor: [0, -36]
   })
 }
 
@@ -306,20 +307,28 @@ const updateMapMarkers = () => {
 
     if (isNaN(lat) || isNaN(lng)) return
 
-    const markerColor = dest.category?.color || '#0d9488'
-    const customIcon = createMarkerIcon(markerColor)
+    const markerColor = dest.category?.color || '#0F766E'
+    const customIcon = createMarkerIcon(markerColor, dest.hasVirtualTour)
     
     // Popup HTML layout
     const popupContent = `
-      <div class="p-1 max-w-[200px] space-y-2 font-sans">
-        ${dest.coverImageUrl ? `<img src="${dest.coverImageUrl}" class="w-full aspect-[16/10] object-cover rounded-lg shadow-sm border border-slate-100" />` : ''}
-        <div class="space-y-0.5">
-          <span class="text-[9px] font-bold text-teal-600 block uppercase tracking-wider">${dest.category?.name || 'Địa danh'}</span>
-          <h4 class="font-black text-xs text-slate-800 line-clamp-1 leading-tight">${dest.name}</h4>
+      <div class="p-2 max-w-[220px] font-sans space-y-3">
+        ${dest.coverImageUrl ? `
+          <div class="relative overflow-hidden rounded-xl border border-slate-100 shadow-sm aspect-[16/10]">
+            <img src="${dest.coverImageUrl}" class="w-full h-full object-cover" />
+            ${dest.hasVirtualTour ? `<span class="absolute top-2 right-2 px-1.5 py-0.5 bg-amber-500 text-slate-950 font-black rounded text-[8px] uppercase tracking-wider">360°</span>` : ''}
+          </div>
+        ` : ''}
+        <div class="space-y-1">
+          <span class="inline-flex px-2 py-0.5 rounded-full text-[8px] font-black uppercase tracking-wider" style="background-color: ${markerColor}15; color: ${markerColor}; border: 1px solid ${markerColor}35">
+            ${dest.category?.name || 'Địa danh'}
+          </span>
+          <h4 class="font-extrabold text-sm text-slate-800 leading-snug truncate">${dest.name}</h4>
+          <p class="text-[10px] text-slate-400 font-bold uppercase tracking-wider">${dest.regionName}</p>
         </div>
-        <div class="flex gap-2.5 pt-1.5 border-t border-slate-100">
-          <a href="/destinations/${dest.slug || dest.id}" class="text-[10px] font-extrabold text-teal-600 hover:text-teal-700 underline">Chi tiết</a>
-          ${dest.hasVirtualTour ? `<a href="/destinations/${dest.id}/tour" class="text-[10px] font-extrabold text-amber-500 hover:text-amber-600 underline flex items-center space-x-0.5"><span>360° Tour</span></a>` : ''}
+        <div class="flex gap-2 pt-2 border-t border-slate-100 w-full">
+          <a href="/destinations/${dest.slug || dest.id}" class="flex-1 py-1.5 bg-slate-50 hover:bg-slate-100 text-slate-700 text-[10px] font-black text-center rounded-lg border border-slate-200/60 transition duration-150">Chi tiết</a>
+          ${dest.hasVirtualTour ? `<a href="/destinations/${dest.id}/tour" class="flex-1 py-1.5 bg-teal-600 hover:bg-teal-500 text-white text-[10px] font-black text-center rounded-lg shadow-sm transition duration-150 flex items-center justify-center space-x-0.5"><span>Vào 360°</span></a>` : ''}
         </div>
       </div>
     `
@@ -409,17 +418,38 @@ onMounted(() => {
 
 <style scoped>
 :deep(.leaflet-popup-content-wrapper) {
-  border-radius: 16px;
+  border-radius: 20px;
   padding: 4px;
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
-  border: 1px border-slate-100;
+  box-shadow: 0 15px 30px -10px rgba(15, 23, 42, 0.2);
+  border: 1px solid rgba(15, 23, 42, 0.05);
 }
 :deep(.leaflet-popup-close-button) {
-  top: 8px !important;
-  right: 8px !important;
-  color: #64748b !important;
+  top: 10px !important;
+  right: 10px !important;
+  color: #94a3b8 !important;
+  font-size: 16px !important;
+  width: 20px !important;
+  height: 20px !important;
 }
 :deep(.leaflet-tile-container) {
   filter: contrast(1.02) saturate(1.02);
 }
+
+/* Marker pulse ring animation */
+:deep(.marker-pulse) {
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  width: calc(100% + 4px);
+  height: calc(100% + 4px);
+  border-radius: 50%;
+  animation: marker-pulse-anim 2s infinite ease-out;
+  pointer-events: none;
+  z-index: 0;
+}
+@keyframes marker-pulse-anim {
+  0% { transform: scale(0.95); opacity: 0.8; }
+  100% { transform: scale(1.65); opacity: 0; }
+}
 </style>
+

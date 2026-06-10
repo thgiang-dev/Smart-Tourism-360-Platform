@@ -230,11 +230,11 @@
       <div 
         v-if="showHelp" 
         class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4"
-        @click.self="showHelp = false"
+        @click.self="closeHelp"
       >
         <div class="bg-slate-900 border border-slate-800 text-white rounded-3xl w-full max-w-md shadow-2xl p-6 relative">
           <button 
-            @click="showHelp = false" 
+            @click="closeHelp" 
             class="absolute top-4 right-4 p-1.5 hover:bg-white/10 rounded-xl text-slate-400 hover:text-white transition"
           >
             <XIcon class="w-4 h-4" />
@@ -267,7 +267,7 @@
             </div>
 
             <button 
-              @click="showHelp = false" 
+              @click="closeHelp" 
               class="w-full py-2.5 bg-teal-500 hover:bg-teal-600 text-slate-950 font-bold text-xs rounded-xl transition shadow-lg"
             >
               Bắt đầu tham quan
@@ -397,6 +397,13 @@ const viewerContainer = ref(null)
 let viewerInstance = null
 let markersPluginInstance = null
 
+// Auto-rotation when idle variables
+const IDLE_TIME_MS = 4000 // 6 seconds of inactivity before starting rotation
+const ROTATION_SPEED = 0.001 // Speed of rotation (radians per frame)
+let idleTimer = null
+let rotationFrameId = null
+let isAutoRotating = false
+
 // Hotspot styles mapping matching admin interface
 const colors = {
   navigation: '#10b981', // emerald
@@ -498,8 +505,85 @@ const loadTourData = async () => {
   }
 }
 
+// Auto-rotation helper functions
+const startAutoRotation = () => {
+  if (isAutoRotating || !viewerInstance || loadingScene.value) return
+  isAutoRotating = true
+
+  const rotateStep = () => {
+    if (!isAutoRotating || !viewerInstance) return
+    try {
+      const position = viewerInstance.getPosition()
+      let currentYaw = position.yaw + ROTATION_SPEED
+      if (currentYaw > Math.PI) {
+        currentYaw -= 2 * Math.PI
+      }
+      viewerInstance.rotate({
+        yaw: currentYaw,
+        pitch: position.pitch
+      })
+    } catch (e) {
+      console.warn("Failed to rotate viewer automatically:", e)
+      stopAutoRotation()
+      return
+    }
+    rotationFrameId = requestAnimationFrame(rotateStep)
+  }
+  rotationFrameId = requestAnimationFrame(rotateStep)
+}
+
+const stopAutoRotation = () => {
+  isAutoRotating = false
+  if (rotationFrameId) {
+    cancelAnimationFrame(rotationFrameId)
+    rotationFrameId = null
+  }
+}
+
+const startIdleTimer = () => {
+  stopIdleTimer()
+  if (loadingScene.value) return
+  idleTimer = setTimeout(() => {
+    startAutoRotation()
+  }, IDLE_TIME_MS)
+}
+
+const stopIdleTimer = () => {
+  if (idleTimer) {
+    clearTimeout(idleTimer)
+    idleTimer = null
+  }
+}
+
+const resetIdle = () => {
+  stopAutoRotation()
+  startIdleTimer()
+}
+
+const setupIdleListeners = () => {
+  const container = viewerContainer.value
+  if (!container) return
+  container.addEventListener('pointerdown', resetIdle)
+  container.addEventListener('wheel', resetIdle)
+  window.addEventListener('keydown', resetIdle)
+  startIdleTimer()
+}
+
+const cleanupIdleListeners = () => {
+  const container = viewerContainer.value
+  if (container) {
+    container.removeEventListener('pointerdown', resetIdle)
+    container.removeEventListener('wheel', resetIdle)
+  }
+  window.removeEventListener('keydown', resetIdle)
+  stopIdleTimer()
+  stopAutoRotation()
+}
+
 // Initialize Photo Sphere Viewer instance
 const initViewer = () => {
+  cleanupIdleListeners()
+
   if (viewerInstance) {
     viewerInstance.destroy()
     viewerInstance = null
@@ -541,10 +625,13 @@ const initViewer = () => {
     const h = e.marker.data
     handleHotspotInteraction(h)
   })
+
+  setupIdleListeners()
 }
 
 // Interacting with Hotspots
 const handleHotspotInteraction = (h) => {
+  resetIdle()
   if (h.type === 'navigation') {
     // Traverse scenes in place
     const targetScene = tour.value.panoramas.find(p => p.id === h.targetPanoramaId)
@@ -585,6 +672,7 @@ const handleHotspotInteraction = (h) => {
 }
 
 const toggleFullscreen = () => {
+  resetIdle()
   if (viewerInstance) {
     viewerInstance.toggleFullscreen()
   }
@@ -596,6 +684,10 @@ const transitionToScene = (scene) => {
   
   loadingScene.value = true
   showSceneList.value = false
+
+  // Stop auto-rotation and timer during transition
+  stopAutoRotation()
+  stopIdleTimer()
 
   // 1. Clear old markers to avoid overlay glitches and click conflicts
   markersPluginInstance.clearMarkers()
@@ -634,15 +726,18 @@ const onSceneChanged = (scene) => {
   }
   
   loadingScene.value = false
+  startIdleTimer()
 }
 
 const switchSceneDirectly = (scene) => {
+  resetIdle()
   if (scene.id === activePanorama.value?.id) return
   transitionToScene(scene)
 }
 
 // Viewer Quick Control Wrappers
 const zoomIn = () => {
+  resetIdle()
   if (viewerInstance) {
     const currentZoom = viewerInstance.getZoomLevel()
     viewerInstance.zoom(currentZoom + 10)
@@ -650,6 +745,7 @@ const zoomIn = () => {
 }
 
 const zoomOut = () => {
+  resetIdle()
   if (viewerInstance) {
     const currentZoom = viewerInstance.getZoomLevel()
     viewerInstance.zoom(currentZoom - 10)
@@ -657,6 +753,7 @@ const zoomOut = () => {
 }
 
 const resetView = () => {
+  resetIdle()
   if (viewerInstance && activePanorama.value) {
     const yaw = parseFloat(activePanorama.value.initialYaw) || 0
     const pitch = parseFloat(activePanorama.value.initialPitch) || 0
@@ -671,6 +768,7 @@ const resetView = () => {
 
 // Toggle drawer list
 const toggleSceneList = () => {
+  resetIdle()
   showSceneList.value = !showSceneList.value
 }
 
@@ -743,7 +841,14 @@ const formatTime = (secs) => {
 
 // Dialog Previews
 const closePreview = () => {
+  resetIdle()
   previewingHotspot.value = null
+}
+
+const closeHelp = () => {
+  resetIdle()
+  showHelp.value = false
+  localStorage.setItem('tourGuideSeen', 'true')
 }
 
 const exitTour = () => {
@@ -761,9 +866,14 @@ watch(() => route.params.id, async (newId) => {
 
 onMounted(() => {
   loadTourData()
+  const guideSeen = localStorage.getItem('tourGuideSeen')
+  if (!guideSeen) {
+    showHelp.value = true
+  }
 })
 
 onBeforeUnmount(() => {
+  cleanupIdleListeners()
   if (viewerInstance) {
     viewerInstance.destroy()
     viewerInstance = null

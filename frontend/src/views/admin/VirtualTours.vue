@@ -1,14 +1,16 @@
 <template>
-  <div class="space-y-6">
+  <div class="space-y-6 font-sans">
     <!-- Header Page Actions -->
-    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-6 rounded-2xl border border-slate-200/60 shadow-sm">
-      <div class="space-y-1">
-        <h2 class="text-lg font-bold text-slate-800">Danh sách Tour ảo 360°</h2>
-        <p class="text-xs text-slate-500">Quản lý các tour tham quan thực tế ảo của địa điểm du lịch.</p>
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 bg-gradient-to-r from-teal-900 via-teal-800 to-slate-900 rounded-3xl p-8 text-white shadow-xl relative overflow-hidden">
+      <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px]"></div>
+      <div class="absolute w-64 h-64 rounded-full bg-teal-500/10 blur-3xl -top-20 -right-20 pointer-events-none"></div>
+      <div class="relative z-10 space-y-1">
+        <h2 class="text-xl md:text-2xl font-black tracking-tight text-white">Danh sách Tour ảo 360°</h2>
+        <p class="text-xs md:text-sm text-teal-200/80 font-medium">Quản lý các tour tham quan thực tế ảo của địa điểm du lịch.</p>
       </div>
       <button 
         @click="openCreateModal"
-        class="inline-flex items-center space-x-2 px-4 py-2.5 bg-teal-500 hover:bg-teal-600 text-slate-950 font-bold rounded-xl shadow-lg hover:shadow-teal-500/10 active:scale-[0.98] transition duration-150"
+        class="relative z-10 inline-flex items-center space-x-2 px-5 py-3 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold rounded-xl shadow-lg hover:shadow-amber-500/20 active:scale-[0.98] transition duration-150"
       >
         <PlusIcon class="w-4 h-4" />
         <span>Thêm Tour ảo</span>
@@ -16,24 +18,24 @@
     </div>
 
     <!-- Filters Bar -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 bg-white p-6 rounded-2xl border border-slate-200/60 shadow-sm">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 bg-white p-5 rounded-2xl border border-slate-200/70 shadow-sm">
       <!-- Search -->
       <div class="relative lg:col-span-2">
         <input 
           v-model="searchKeyword"
           type="text" 
           placeholder="Tìm theo tiêu đề, địa điểm..." 
-          class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-teal-500/80 focus:bg-white transition"
+          class="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-teal-500/80 focus:bg-white focus:ring-4 focus:ring-teal-500/10 transition"
         />
-        <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
-          <SearchIcon class="w-5 h-5" />
+        <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400">
+          <SearchIcon class="w-4 h-4" />
         </span>
       </div>
 
       <!-- Status Filter -->
       <select 
         v-model="selectedStatus"
-        class="px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-teal-500/80 focus:bg-white transition"
+        class="px-3 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-teal-500/80 focus:bg-white focus:ring-4 focus:ring-teal-500/10 transition"
       >
         <option :value="null">Tất cả Trạng thái</option>
         <option value="published">Đã xuất bản (Published)</option>
@@ -42,7 +44,7 @@
 
       <button 
         @click="resetFilters"
-        class="py-2.5 border border-slate-200 hover:bg-slate-50 text-slate-600 font-semibold text-sm rounded-xl transition duration-150"
+        class="premium-btn py-3 border border-slate-200 hover:bg-slate-50 text-slate-600 font-semibold text-sm rounded-xl transition duration-150"
       >
         Đặt lại bộ lọc
       </button>
@@ -63,8 +65,8 @@
     </div>
 
     <!-- Error Alert -->
-    <div v-else-if="error" class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl flex items-center space-x-3">
-      <AlertCircleIcon class="w-5 h-5 flex-shrink-0" />
+    <div v-else-if="error" class="bg-rose-50 border border-rose-200 text-rose-700 px-4 py-3 rounded-xl flex items-center space-x-3 shadow-sm">
+      <AlertCircleIcon class="w-5 h-5 flex-shrink-0 text-rose-500" />
       <span class="text-sm font-medium">{{ error }}</span>
     </div>
 
@@ -87,22 +89,22 @@
       <div 
         v-for="tour in filteredTours" 
         :key="tour.id"
-        class="bg-white rounded-2xl border border-slate-200/60 shadow-sm overflow-hidden flex flex-col group hover:shadow-md hover:border-slate-300/60 transition duration-200"
+        class="premium-card bg-white rounded-2xl border border-slate-200/70 shadow-sm overflow-hidden flex flex-col group"
       >
         <!-- Thumbnail -->
         <div class="aspect-[16/10] w-full bg-slate-100 border-b border-slate-100 relative overflow-hidden flex items-center justify-center text-slate-400">
           <img 
             v-if="tour.thumbnailUrl" 
             :src="tour.thumbnailUrl" 
-            class="w-full h-full object-cover group-hover:scale-105 transition duration-300"
+            class="w-full h-full object-cover group-hover:scale-105 transition duration-500"
             alt="Tour cover image"
           />
           <NavigationIcon v-else class="w-10 h-10 text-slate-300" />
           
           <!-- Status Badge -->
           <span 
-            class="absolute top-4 right-4 inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold shadow-sm"
-            :class="tour.status === 'published' ? 'bg-emerald-500 text-slate-950' : 'bg-amber-400 text-slate-950'"
+            class="absolute top-4 right-4 inline-flex items-center px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider shadow-sm border"
+            :class="tour.status === 'published' ? 'bg-teal-50 text-teal-700 border-teal-200/60' : 'bg-amber-50 text-amber-700 border-amber-200/60'"
           >
             {{ tour.status === 'published' ? 'Đã xuất bản' : 'Bản nháp' }}
           </span>
@@ -111,7 +113,7 @@
         <!-- Details -->
         <div class="p-6 flex-grow flex flex-col justify-between space-y-4">
           <div class="space-y-2">
-            <h3 class="font-bold text-slate-800 text-base line-clamp-1 group-hover:text-teal-600 transition">{{ tour.title }}</h3>
+            <h3 class="font-bold text-slate-800 text-base line-clamp-1 group-hover:text-teal-700 transition">{{ tour.title }}</h3>
             <div class="flex items-center text-xs text-slate-500 space-x-1">
               <MapPinIcon class="w-3.5 h-3.5 text-slate-400" />
               <span class="truncate font-semibold text-slate-700">{{ tour.destinationName }}</span>
@@ -132,13 +134,13 @@
                 class="p-2 hover:bg-teal-50 rounded-lg text-slate-500 hover:text-teal-600 transition"
                 title="Quản lý các cảnh"
               >
-                <CompassIcon class="w-4 h-4" />
+                <CompassIcon class="w-4.5 h-4.5" />
               </router-link>
 
               <!-- Edit button -->
               <button
                 @click="openEditModal(tour)"
-                class="p-2 hover:bg-slate-100 rounded-lg text-slate-500 hover:text-indigo-600 transition"
+                class="p-2 hover:bg-indigo-50 rounded-lg text-slate-500 hover:text-indigo-600 transition"
                 title="Chỉnh sửa tour"
               >
                 <EditIcon class="w-4 h-4" />
@@ -147,7 +149,7 @@
               <!-- Delete button -->
               <button
                 @click="confirmDelete(tour)"
-                class="p-2 hover:bg-slate-100 rounded-lg text-slate-500 hover:text-red-600 transition"
+                class="p-2 hover:bg-rose-50 rounded-lg text-slate-500 hover:text-rose-600 transition"
                 title="Xóa tour ảo"
               >
                 <TrashIcon class="w-4 h-4" />
@@ -164,36 +166,36 @@
       class="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4"
       @click.self="closeFormModal"
     >
-      <div class="bg-white rounded-2xl w-full max-w-lg shadow-2xl border border-slate-100 overflow-hidden flex flex-col">
+      <div class="bg-white rounded-3xl w-full max-w-lg shadow-2xl border border-slate-100 overflow-hidden flex flex-col animate-in fade-in zoom-in-95 duration-200">
         <!-- Modal Header -->
-        <div class="p-6 border-b border-slate-100 flex justify-between items-center">
+        <div class="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
           <div class="space-y-1">
-            <h3 class="text-base font-bold text-slate-800">
+            <h3 class="text-base font-black text-slate-800">
               {{ isEditMode ? 'Chỉnh sửa Tour ảo 360°' : 'Thêm Tour ảo mới' }}
             </h3>
-            <p class="text-xs text-slate-500">
+            <p class="text-xs text-slate-500 font-medium">
               Thiết lập thông tin chung cho tour ảo của địa điểm.
             </p>
           </div>
           <button 
             type="button"
             @click="closeFormModal"
-            class="p-1.5 hover:bg-slate-100 rounded-lg text-slate-400 hover:text-slate-600 transition"
+            class="p-2 hover:bg-slate-100 rounded-xl text-slate-400 hover:text-slate-600 transition"
           >
-            <XIcon class="w-5 h-5" />
+            <XIcon class="w-4 h-4" />
           </button>
         </div>
 
         <!-- Modal Body -->
-        <form @submit.prevent="submitForm" class="p-6 space-y-4">
+        <form @submit.prevent="submitForm" class="p-6 space-y-5">
           <!-- Destination selection -->
           <div>
-            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Địa điểm liên kết *</label>
+            <label class="block text-[10px] font-black text-slate-400 uppercase tracking-wider mb-2">Địa điểm liên kết *</label>
             <select 
               v-model="modalForm.destinationId"
               required
               :disabled="isEditMode"
-              class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-teal-500/80 focus:bg-white transition disabled:opacity-50 disabled:cursor-not-allowed"
+              class="w-full px-3 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-teal-500/80 focus:bg-white focus:ring-4 focus:ring-teal-500/10 transition disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <option :value="null" disabled>Chọn địa điểm du lịch</option>
               <option 
@@ -208,39 +210,39 @@
 
           <!-- Title -->
           <div>
-            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Tiêu đề Tour ảo *</label>
+            <label class="block text-[10px] font-black text-slate-400 uppercase tracking-wider mb-2">Tiêu đề Tour ảo *</label>
             <input 
               v-model="modalForm.title"
               type="text"
               required
               placeholder="Ví dụ: Tour tham quan 360° Chùa Ông"
-              class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-teal-500/80 focus:bg-white transition"
+              class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-teal-500/80 focus:bg-white focus:ring-4 focus:ring-teal-500/10 transition"
             />
           </div>
 
           <!-- Description -->
           <div>
-            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Mô tả ngắn</label>
+            <label class="block text-[10px] font-black text-slate-400 uppercase tracking-wider mb-2">Mô tả ngắn</label>
             <textarea 
               v-model="modalForm.description"
               rows="3"
               placeholder="Giới thiệu đôi nét về tour tham quan ảo này..."
-              class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-teal-500/80 focus:bg-white transition resize-none"
+              class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-teal-500/80 focus:bg-white focus:ring-4 focus:ring-teal-500/10 transition resize-none"
             ></textarea>
           </div>
 
           <!-- Thumbnail Picker -->
           <div>
-            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Ảnh đại diện (Thumbnail)</label>
-            <div class="relative w-full aspect-[16/9] rounded-xl overflow-hidden border border-slate-200 bg-slate-50 flex flex-col items-center justify-center group">
+            <label class="block text-[10px] font-black text-slate-400 uppercase tracking-wider mb-2">Ảnh đại diện (Thumbnail)</label>
+            <div class="relative w-full aspect-[16/9] rounded-2xl overflow-hidden border border-slate-200 bg-slate-50 flex flex-col items-center justify-center group">
               <img 
                 v-if="modalForm.thumbnailUrl" 
                 :src="modalForm.thumbnailUrl" 
                 class="w-full h-full object-cover" 
               />
               <div v-else class="text-center p-6 space-y-2 text-slate-400">
-                <ImageIcon class="w-8 h-8 mx-auto" />
-                <p class="text-xs">Chưa chọn ảnh đại diện</p>
+                <ImageIcon class="w-8 h-8 mx-auto text-slate-300" />
+                <p class="text-xs font-semibold">Chưa chọn ảnh đại diện</p>
               </div>
               
               <div 
@@ -250,14 +252,14 @@
                 <button 
                   type="button"
                   @click="openMediaSelector"
-                  class="px-3 py-1.5 bg-white text-slate-900 rounded-lg text-xs font-bold hover:bg-slate-50 transition"
+                  class="px-3.5 py-2 bg-white text-slate-900 rounded-xl text-xs font-black hover:bg-slate-50 transition"
                 >
                   Thay đổi
                 </button>
                 <button 
                   type="button"
                   @click="removeThumbnail"
-                  class="px-3 py-1.5 bg-red-600 text-white rounded-lg text-xs font-bold hover:bg-red-700 transition"
+                  class="px-3.5 py-2 bg-rose-600 text-white rounded-xl text-xs font-black hover:bg-rose-700 transition"
                 >
                   Xóa
                 </button>
@@ -268,16 +270,16 @@
               <button
                 type="button"
                 @click="openMediaSelector"
-                class="py-2 px-3 border border-slate-200 hover:bg-slate-50 text-slate-700 font-semibold rounded-xl text-xs transition flex items-center space-x-1"
+                class="premium-btn py-2 px-3 border border-slate-200 hover:bg-slate-50 text-slate-700 font-bold rounded-xl text-xs transition flex items-center space-x-1"
               >
-                <ImageIcon class="w-3.5 h-3.5" />
+                <ImageIcon class="w-3.5 h-3.5 text-slate-500" />
                 <span>Chọn từ thư viện</span>
               </button>
               
               <button
                 type="button"
                 @click="triggerDirectUpload"
-                class="py-2 px-3 bg-slate-900 hover:bg-slate-800 text-white font-semibold rounded-xl text-xs transition flex items-center space-x-1"
+                class="premium-btn py-2 px-3 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-xl text-xs transition flex items-center space-x-1"
               >
                 <UploadIcon class="w-3.5 h-3.5" />
                 <span>Tải ảnh mới</span>
@@ -294,21 +296,21 @@
 
           <!-- Status selection -->
           <div>
-            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Trạng thái xuất bản</label>
+            <label class="block text-[10px] font-black text-slate-400 uppercase tracking-wider mb-2">Trạng thái xuất bản</label>
             <div class="flex items-center space-x-6">
-              <label class="flex items-center space-x-2 cursor-pointer">
+              <label class="flex items-center space-x-2 cursor-pointer group">
                 <input type="radio" v-model="modalForm.status" value="draft" class="text-teal-600 focus:ring-teal-500" />
-                <span class="text-sm font-medium text-slate-700">Lưu nháp (Draft)</span>
+                <span class="text-sm font-bold text-slate-700 group-hover:text-slate-900">Lưu nháp (Draft)</span>
               </label>
-              <label class="flex items-center space-x-2 cursor-pointer">
+              <label class="flex items-center space-x-2 cursor-pointer group">
                 <input type="radio" v-model="modalForm.status" value="published" class="text-teal-600 focus:ring-teal-500" />
-                <span class="text-sm font-medium text-slate-700">Xuất bản (Published)</span>
+                <span class="text-sm font-bold text-slate-700 group-hover:text-slate-900">Xuất bản (Published)</span>
               </label>
             </div>
           </div>
 
           <!-- Error Message inside Modal -->
-          <div v-if="modalError" class="text-xs font-semibold text-red-600 bg-red-50 p-2.5 rounded-lg border border-red-100">
+          <div v-if="modalError" class="text-xs font-bold text-rose-600 bg-rose-50 p-3 rounded-xl border border-rose-100">
             {{ modalError }}
           </div>
 
@@ -316,7 +318,7 @@
           <div class="flex items-center space-x-3 pt-4 border-t border-slate-100">
             <button 
               type="submit" 
-              class="flex-grow py-2.5 bg-teal-500 hover:bg-teal-600 text-slate-950 font-bold rounded-xl shadow-lg hover:shadow-teal-500/10 active:scale-[0.98] transition flex items-center justify-center space-x-2 disabled:opacity-50"
+              class="flex-grow py-3 bg-teal-500 hover:bg-teal-600 text-slate-950 font-bold rounded-xl shadow-lg hover:shadow-teal-500/10 active:scale-[0.98] transition flex items-center justify-center space-x-2 disabled:opacity-50"
               :disabled="submitting"
             >
               <Loader2Icon v-if="submitting" class="w-4 h-4 animate-spin" />
@@ -325,10 +327,10 @@
             <button 
               type="button"
               @click="closeFormModal"
-              class="px-4 py-2.5 border border-slate-200 hover:bg-slate-50 text-slate-600 font-semibold rounded-xl text-sm transition"
+              class="px-5 py-3 border border-slate-200 hover:bg-slate-50 text-slate-600 font-bold rounded-xl text-sm transition"
               :disabled="submitting"
             >
-              Hủy bỏ
+              Hủy
             </button>
           </div>
         </form>
@@ -341,33 +343,33 @@
       class="fixed inset-0 z-[60] overflow-y-auto bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4"
       @click.self="closeMediaSelector"
     >
-      <div class="bg-white rounded-2xl w-full max-w-2xl shadow-2xl border border-slate-100 overflow-hidden flex flex-col max-h-[80vh]">
+      <div class="bg-white rounded-3xl w-full max-w-2xl shadow-2xl border border-slate-100 overflow-hidden flex flex-col max-h-[80vh] animate-in fade-in zoom-in-95 duration-200">
         <!-- Header -->
-        <div class="p-6 border-b border-slate-100 flex justify-between items-center">
+        <div class="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
           <div class="space-y-1">
-            <h3 class="text-base font-bold text-slate-800">Chọn ảnh làm bìa</h3>
+            <h3 class="text-base font-black text-slate-800">Chọn ảnh làm bìa</h3>
             <p class="text-xs text-slate-500 font-medium">Chọn một hình ảnh có sẵn trong thư viện media hoặc tải lên ảnh mới.</p>
           </div>
           <button 
             type="button"
             @click="closeMediaSelector"
-            class="p-1.5 hover:bg-slate-100 rounded-lg text-slate-400 hover:text-slate-600 transition"
+            class="p-2 hover:bg-slate-100 rounded-xl text-slate-400 hover:text-slate-600 transition"
           >
-            <XIcon class="w-5 h-5" />
+            <XIcon class="w-4 h-4" />
           </button>
         </div>
 
         <!-- Modal Upload Section inside Selector -->
         <div class="px-6 py-4 bg-slate-50 border-b border-slate-100 flex items-center justify-between">
-          <span class="text-xs text-slate-500 font-medium">Tải ảnh mới:</span>
+          <span class="text-xs text-slate-500 font-semibold">Tải ảnh mới lên thư viện:</span>
           <button 
             type="button"
             @click="triggerModalUpload"
-            class="px-3 py-1.5 bg-teal-500 hover:bg-teal-600 text-slate-950 font-bold rounded-lg text-xs transition flex items-center space-x-1"
+            class="premium-btn px-4 py-2 bg-teal-500 hover:bg-teal-600 text-slate-950 font-bold rounded-xl text-xs transition flex items-center space-x-1"
             :disabled="modalUploading"
           >
-            <Loader2Icon v-if="modalUploading" class="w-3 h-3 animate-spin" />
-            <UploadIcon v-else class="w-3 h-3" />
+            <Loader2Icon v-if="modalUploading" class="w-3.5 h-3.5 animate-spin" />
+            <UploadIcon v-else class="w-3.5 h-3.5" />
             <span>Tải lên</span>
           </button>
           <input 
@@ -380,22 +382,22 @@
         </div>
 
         <!-- Content Area -->
-        <div class="p-6 overflow-y-auto flex-1 min-h-[200px]">
-          <div v-if="selectorLoading" class="grid grid-cols-4 gap-3 animate-pulse">
-            <div v-for="i in 8" :key="i" class="aspect-square bg-slate-100 rounded-xl"></div>
+        <div class="p-6 overflow-y-auto flex-1 min-h-[250px]">
+          <div v-if="selectorLoading" class="grid grid-cols-4 gap-4 animate-pulse">
+            <div v-for="i in 8" :key="i" class="aspect-square bg-slate-100 rounded-2xl"></div>
           </div>
 
           <div v-else-if="selectorImages.length === 0" class="text-center py-12 space-y-3">
             <ImageIcon class="w-8 h-8 mx-auto text-slate-300" />
-            <p class="text-sm font-medium text-slate-500">Thư viện ảnh trống.</p>
+            <p class="text-sm font-bold text-slate-500">Thư viện ảnh trống.</p>
           </div>
 
-          <div v-else class="grid grid-cols-4 gap-3">
+          <div v-else class="grid grid-cols-4 gap-4">
             <div 
               v-for="img in selectorImages" 
               :key="img.id"
               :class="[
-                'aspect-square rounded-xl overflow-hidden cursor-pointer border-2 transition relative group bg-slate-50',
+                'aspect-square rounded-2xl overflow-hidden cursor-pointer border-2 transition relative group bg-slate-50 shadow-sm',
                 modalForm.thumbnailId === img.id ? 'border-teal-500 shadow-md ring-2 ring-teal-500/20' : 'border-slate-100 hover:border-slate-300'
               ]"
               @click="selectImage(img)"
@@ -406,7 +408,7 @@
                 class="absolute inset-0 bg-teal-500/10 flex items-center justify-center"
               >
                 <div class="p-1 bg-teal-500 text-slate-950 rounded-full shadow-md">
-                  <CheckIcon class="w-3 h-3" />
+                  <CheckIcon class="w-3.5 h-3.5" />
                 </div>
               </div>
             </div>
@@ -418,13 +420,13 @@
           v-if="selectorImages.length > 0 && selectorTotalPages > 1"
           class="p-4 bg-slate-50 border-t border-slate-100 flex justify-between items-center text-xs"
         >
-          <span class="text-slate-500 font-medium">Trang {{ selectorPage }} / {{ selectorTotalPages }}</span>
+          <span class="text-slate-500 font-bold">Trang {{ selectorPage }} / {{ selectorTotalPages }}</span>
           <div class="flex items-center space-x-2">
             <button 
               type="button"
               @click="selectorPrevPage"
               :disabled="selectorPage === 1"
-              class="px-2.5 py-1 bg-white border border-slate-200 rounded-md hover:bg-slate-50 transition disabled:opacity-40"
+              class="px-3 py-1.5 bg-white border border-slate-200 rounded-lg font-bold hover:bg-slate-50 transition disabled:opacity-40"
             >
               Trước
             </button>
@@ -432,7 +434,7 @@
               type="button"
               @click="selectorNextPage"
               :disabled="selectorPage === selectorTotalPages"
-              class="px-2.5 py-1 bg-white border border-slate-200 rounded-md hover:bg-slate-50 transition disabled:opacity-40"
+              class="px-3 py-1.5 bg-white border border-slate-200 rounded-lg font-bold hover:bg-slate-50 transition disabled:opacity-40"
             >
               Sau
             </button>

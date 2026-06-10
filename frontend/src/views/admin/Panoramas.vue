@@ -1,35 +1,37 @@
 <template>
   <div class="space-y-6">
     <!-- Header with Back navigation -->
-    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-6 rounded-2xl border border-slate-200/60 shadow-sm">
-      <div class="space-y-1">
-        <div class="flex items-center space-x-2 text-xs text-slate-500 font-medium">
-          <router-link to="/admin/virtual-tours" class="hover:text-teal-600 transition flex items-center">
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-gradient-to-r from-slate-900 via-slate-800 to-teal-950 p-6 md:p-8 rounded-3xl text-white shadow-xl relative overflow-hidden">
+      <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px]"></div>
+      <div class="absolute w-48 h-48 rounded-full bg-teal-500/10 blur-2xl -bottom-10 -right-10 pointer-events-none"></div>
+      <div class="relative z-10 space-y-1">
+        <div class="flex items-center space-x-2 text-[10px] font-black text-teal-200 uppercase tracking-widest mb-1">
+          <router-link to="/admin/virtual-tours" class="hover:text-amber-400 transition flex items-center">
             <ChevronLeftIcon class="w-3.5 h-3.5 mr-0.5" />
             <span>Quản lý Tour ảo</span>
           </router-link>
           <span>/</span>
-          <span class="text-slate-400">Quản lý Cảnh</span>
+          <span class="text-white/60">Quản lý Cảnh</span>
         </div>
-        <h2 class="text-lg font-bold text-slate-800">
-          Cảnh Panorama: <span class="text-teal-600 font-extrabold">{{ tour?.title || 'Đang tải...' }}</span>
+        <h2 class="text-xl md:text-2xl font-black tracking-tight">
+          Cảnh Panorama: <span class="text-amber-400">{{ tour?.title || 'Đang tải...' }}</span>
         </h2>
-        <p class="text-xs text-slate-500">
+        <p class="text-xs text-teal-200/70 font-medium">
           Thiết lập danh sách cảnh 360°, sắp xếp thứ tự hiển thị và định dạng góc nhìn mặc định cho khách du lịch.
         </p>
       </div>
 
       <!-- Action Buttons -->
-      <div class="flex items-center space-x-2 w-full sm:w-auto">
+      <div class="flex items-center space-x-2 w-full sm:w-auto relative z-10">
         <!-- Bulk upload button -->
         <button 
           @click="triggerBulkUpload"
-          class="flex-grow sm:flex-grow-0 inline-flex items-center justify-center space-x-1.5 px-4 py-2.5 bg-slate-900 hover:bg-slate-800 text-white font-semibold rounded-xl text-sm transition"
+          class="premium-btn flex-grow sm:flex-grow-0 inline-flex items-center justify-center space-x-1.5 px-4.5 py-3 bg-white/10 hover:bg-white/15 border border-white/10 text-white font-bold rounded-xl text-xs transition"
           :disabled="bulkUploading"
         >
           <Loader2Icon v-if="bulkUploading" class="w-4 h-4 animate-spin" />
           <UploadIcon v-else class="w-4 h-4" />
-          <span>{{ bulkUploading ? 'Đang tải lên...' : 'Tải lên hàng loạt' }}</span>
+          <span>{{ bulkUploading ? 'Đang tải...' : 'Tải hàng loạt' }}</span>
         </button>
         <input 
           ref="bulkFilesInput"
@@ -43,16 +45,16 @@
         <!-- Add single panorama button -->
         <button 
           @click="openCreateModal"
-          class="flex-grow sm:flex-grow-0 inline-flex items-center justify-center space-x-1.5 px-4 py-2.5 bg-teal-500 hover:bg-teal-600 text-slate-950 font-bold rounded-xl shadow-lg hover:shadow-teal-500/10 active:scale-[0.98] transition"
+          class="premium-btn flex-grow sm:flex-grow-0 inline-flex items-center justify-center space-x-1.5 px-5 py-3 bg-amber-500 hover:bg-amber-600 text-slate-950 font-black rounded-xl text-xs shadow-lg shadow-amber-500/15 hover:shadow-amber-500/25 active:scale-[0.98] transition"
         >
-          <PlusIcon class="w-4 h-4" />
+          <PlusIcon class="w-4 h-4 stroke-[3]" />
           <span>Thêm cảnh</span>
         </button>
       </div>
     </div>
 
     <!-- Loading state -->
-    <div v-if="loading" class="bg-white rounded-2xl border border-slate-200/60 shadow-sm p-6 space-y-4">
+    <div v-if="loading" class="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-6 space-y-4">
       <div v-for="i in 3" :key="i" class="flex items-center justify-between py-4 border-b border-slate-100 last:border-0 animate-pulse">
         <div class="flex items-center space-x-4">
           <div class="w-20 h-14 bg-slate-100 rounded-lg"></div>
@@ -67,17 +69,17 @@
 
     <!-- Error Alert -->
     <div v-else-if="error" class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl flex items-center space-x-3">
-      <AlertCircleIcon class="w-5 h-5 flex-shrink-0" />
-      <span class="text-sm font-medium">{{ error }}</span>
+      <AlertCircleIcon class="w-5 h-5 flex-shrink-0 text-red-500" />
+      <span class="text-sm font-semibold">{{ error }}</span>
     </div>
 
     <!-- Empty State -->
-    <div v-else-if="panoramas.length === 0" class="bg-white py-16 text-center rounded-2xl border border-slate-200/60 shadow-sm space-y-4">
+    <div v-else-if="panoramas.length === 0" class="bg-white py-16 text-center rounded-2xl border border-slate-200/80 shadow-sm space-y-4">
       <div class="inline-flex p-4 bg-slate-50 text-slate-400 rounded-full border border-slate-100">
         <CompassIcon class="w-10 h-10" />
       </div>
       <div class="space-y-1">
-        <h3 class="text-base font-bold text-slate-700">Chưa có cảnh 360° nào</h3>
+        <h3 class="text-base font-black text-slate-700">Chưa có cảnh 360° nào</h3>
         <p class="text-xs text-slate-500 max-w-sm mx-auto">Vui lòng tải lên hoặc chọn ảnh panorama từ thư viện để thiết lập tour ảo.</p>
       </div>
     </div>
@@ -87,10 +89,10 @@
       <div 
         v-for="(pano, index) in panoramas" 
         :key="pano.id"
-        class="bg-white rounded-2xl border border-slate-200/60 shadow-sm overflow-hidden flex flex-col group hover:shadow-md hover:border-slate-300/60 transition duration-200"
+        class="premium-card bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden flex flex-col group hover:shadow-md hover:border-teal-500/30 transition duration-200"
       >
         <!-- Photo Container -->
-        <div class="aspect-[16/10] w-full bg-slate-100 border-b border-slate-100 relative overflow-hidden flex items-center justify-center text-slate-400">
+        <div class="aspect-[16/10] w-full bg-slate-100 border-b border-slate-200/80 relative overflow-hidden flex items-center justify-center text-slate-400 shadow-inner">
           <img 
             :src="pano.panoramaImageUrl" 
             class="w-full h-full object-cover group-hover:scale-[1.03] transition duration-300"
@@ -98,20 +100,20 @@
           />
           
           <!-- Badges -->
-          <div class="absolute top-4 left-4 flex flex-col gap-2">
+          <div class="absolute top-4 left-4 flex flex-col gap-2 relative z-10">
             <span 
               v-if="tour?.defaultPanoramaId === pano.id"
-              class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-teal-500 text-slate-950 shadow-sm"
+              class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-black bg-teal-500 text-slate-950 shadow-md"
             >
-              <CheckIcon class="w-3.5 h-3.5 mr-1" />
+              <CheckIcon class="w-3.5 h-3.5 mr-1 stroke-[3.5]" />
               Mặc định
             </span>
-            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-slate-900/70 text-white shadow-sm font-mono">
+            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold bg-slate-955/80 backdrop-blur-sm text-white shadow-md font-mono">
               Thứ tự: {{ pano.displayOrder }}
             </span>
             <span 
               :class="[
-                'inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold shadow-sm',
+                'inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold shadow-md',
                 pano.status === 'published' ? 'bg-emerald-500 text-slate-950' : 'bg-amber-500 text-slate-950'
               ]"
             >
@@ -123,7 +125,7 @@
           <button
             v-if="tour?.defaultPanoramaId !== pano.id"
             @click="setDefaultPanorama(pano.id)"
-            class="absolute top-4 right-4 p-2 bg-white/95 text-slate-700 hover:text-teal-600 rounded-full shadow-md hover:scale-105 transition"
+            class="absolute top-4 right-4 p-2 bg-white/95 text-slate-700 hover:text-teal-650 rounded-full shadow-md hover:scale-110 active:scale-95 transition relative z-10"
             title="Đặt làm cảnh mặc định của tour"
           >
             <StarIcon class="w-4 h-4" />
@@ -131,12 +133,12 @@
         </div>
 
         <!-- Details -->
-        <div class="p-5 flex-grow flex flex-col justify-between space-y-4">
+        <div class="p-5 flex-grow flex flex-col justify-between space-y-4 bg-white">
           <div class="space-y-1.5">
-            <h3 class="font-bold text-slate-800 text-sm line-clamp-1">{{ pano.title }}</h3>
-            <p class="text-xs text-slate-400 line-clamp-2">{{ pano.description || 'Không có mô tả cảnh.' }}</p>
+            <h3 class="font-bold text-slate-800 text-sm line-clamp-1 hover:text-teal-600 transition">{{ pano.title }}</h3>
+            <p class="text-xs text-slate-450 line-clamp-2 font-medium">{{ pano.description || 'Không có mô tả cảnh.' }}</p>
             
-            <div class="text-[10px] text-slate-500 font-mono flex gap-3">
+            <div class="text-[10px] text-slate-450 font-bold font-mono flex gap-3.5 pt-1">
               <span>Yaw: {{ parseFloat(pano.initialYaw).toFixed(2) }}</span>
               <span>Pitch: {{ parseFloat(pano.initialPitch).toFixed(2) }}</span>
               <span>Fov: {{ parseFloat(pano.initialFov).toFixed(0) }}°</span>
@@ -149,7 +151,7 @@
               <button
                 @click="moveOrder(index, -1)"
                 :disabled="index === 0"
-                class="p-1.5 bg-slate-50 hover:bg-slate-100 rounded border border-slate-200 text-slate-500 disabled:opacity-40 disabled:cursor-not-allowed"
+                class="premium-btn p-1.5 bg-slate-50 hover:bg-slate-100 rounded-lg border border-slate-200 text-slate-500 disabled:opacity-40 disabled:cursor-not-allowed"
                 title="Di chuyển lên"
               >
                 <ArrowUpIcon class="w-3.5 h-3.5" />
@@ -157,7 +159,7 @@
               <button
                 @click="moveOrder(index, 1)"
                 :disabled="index === panoramas.length - 1"
-                class="p-1.5 bg-slate-50 hover:bg-slate-100 rounded border border-slate-200 text-slate-500 disabled:opacity-40 disabled:cursor-not-allowed"
+                class="premium-btn p-1.5 bg-slate-50 hover:bg-slate-100 rounded-lg border border-slate-200 text-slate-500 disabled:opacity-40 disabled:cursor-not-allowed"
                 title="Di chuyển xuống"
               >
                 <ArrowDownIcon class="w-3.5 h-3.5" />
@@ -169,7 +171,7 @@
               <!-- Initial viewport viewer button -->
               <button
                 @click="openInitialViewModal(pano)"
-                class="p-2 hover:bg-teal-55 rounded-lg text-slate-500 hover:text-teal-600 transition"
+                class="premium-btn p-2 hover:bg-slate-100 rounded-xl text-slate-500 hover:text-teal-600 transition"
                 title="Đặt góc nhìn ban đầu"
               >
                 <CompassIcon class="w-4 h-4" />
@@ -178,7 +180,7 @@
               <!-- Hotspot editor button -->
               <router-link
                 :to="'/admin/panoramas/' + pano.id + '/hotspots'"
-                class="p-2 hover:bg-slate-100 rounded-lg text-slate-500 hover:text-teal-600 transition flex items-center justify-center"
+                class="premium-btn p-2 hover:bg-slate-100 rounded-xl text-slate-500 hover:text-teal-600 transition flex items-center justify-center"
                 title="Thiết lập điểm tương tác (Hotspot)"
               >
                 <PinIcon class="w-4 h-4" />
@@ -187,7 +189,7 @@
               <!-- Edit button -->
               <button
                 @click="openEditModal(pano)"
-                class="p-2 hover:bg-slate-100 rounded-lg text-slate-500 hover:text-indigo-600 transition"
+                class="premium-btn p-2 hover:bg-slate-100 rounded-xl text-slate-500 hover:text-indigo-650 transition"
                 title="Chỉnh sửa cảnh"
               >
                 <EditIcon class="w-4 h-4" />
@@ -196,10 +198,10 @@
               <!-- Delete button -->
               <button
                 @click="confirmDelete(pano)"
-                class="p-2 hover:bg-slate-100 rounded-lg text-slate-500 hover:text-red-600 transition"
+                class="premium-btn p-2 hover:bg-slate-100 rounded-xl text-slate-500 hover:text-red-600 transition"
                 title="Xóa cảnh"
               >
-                <TrashIcon class="w-4 h-4" />
+                <TrashIcon class="w-4 h-4 text-rose-500" />
               </button>
             </div>
           </div>
@@ -213,11 +215,11 @@
       class="fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4"
       @click.self="closeFormModal"
     >
-      <div class="bg-white rounded-2xl w-full max-w-lg shadow-2xl border border-slate-100 overflow-hidden flex flex-col">
+      <div class="bg-white rounded-3xl w-full max-w-lg shadow-2xl border border-slate-100 overflow-hidden flex flex-col animate-scale-up">
         <!-- Modal Header -->
         <div class="p-6 border-b border-slate-100 flex justify-between items-center">
           <div class="space-y-1">
-            <h3 class="text-base font-bold text-slate-800">
+            <h3 class="text-base font-black text-slate-800">
               {{ isEditMode ? 'Chỉnh sửa cảnh Panorama' : 'Thêm cảnh Panorama mới' }}
             </h3>
             <p class="text-xs text-slate-500 font-medium">
@@ -227,104 +229,104 @@
           <button 
             type="button"
             @click="closeFormModal"
-            class="p-1.5 hover:bg-slate-100 rounded-lg text-slate-400 hover:text-slate-600 transition"
+            class="p-2 hover:bg-slate-100 rounded-xl text-slate-400 hover:text-slate-600 transition"
           >
             <XIcon class="w-5 h-5" />
           </button>
         </div>
 
         <!-- Modal Body -->
-        <form @submit.prevent="submitForm" class="p-6 space-y-4">
+        <form @submit.prevent="submitForm" class="p-6 space-y-4 bg-white">
           <!-- Title -->
           <div>
-            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Tiêu đề cảnh *</label>
+            <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Tiêu đề cảnh *</label>
             <input 
               v-model="modalForm.title"
               type="text"
               required
               placeholder="Ví dụ: Cổng chính, Bên trong chính điện..."
-              class="w-full px-4 py-2.5 bg-slate-50/80 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-teal-500/80 focus:bg-white transition"
+              class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-teal-500/80 focus:bg-white focus:ring-4 focus:ring-teal-500/5 transition font-medium"
             />
           </div>
 
           <!-- Description -->
           <div>
-            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Mô tả ngắn</label>
+            <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Mô tả ngắn</label>
             <textarea 
               v-model="modalForm.description"
               rows="2"
               placeholder="Mô tả sơ lược về góc cảnh hoặc vị trí đứng này..."
-              class="w-full px-4 py-2.5 bg-slate-50/80 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-teal-500/80 focus:bg-white transition resize-none"
+              class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-teal-500/80 focus:bg-white focus:ring-4 focus:ring-teal-500/5 transition resize-none font-medium"
             ></textarea>
           </div>
 
-          <!-- Display Order -->
-          <div>
-            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Thứ tự hiển thị *</label>
-            <input 
-              v-model.number="modalForm.displayOrder"
-              type="number"
-              required
-              class="w-full px-4 py-2.5 bg-slate-50/80 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-teal-500/80 focus:bg-white transition font-mono"
-            />
-          </div>
-
-          <!-- Status -->
-          <div>
-            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Trạng thái *</label>
-            <select 
-              v-model="modalForm.status"
-              required
-              class="w-full px-4 py-2.5 bg-slate-50/80 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-teal-500/80 focus:bg-white transition"
-            >
-              <option value="draft">Bản nháp (Draft)</option>
-              <option value="published">Xuất bản (Published)</option>
-              <option value="archived">Lưu trữ (Archived)</option>
-            </select>
+          <!-- Display Order & Status -->
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Thứ tự hiển thị *</label>
+              <input 
+                v-model.number="modalForm.displayOrder"
+                type="number"
+                required
+                class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-4 focus:ring-teal-500/5 transition font-mono font-bold"
+              />
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Trạng thái *</label>
+              <select 
+                v-model="modalForm.status"
+                required
+                class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-4 focus:ring-teal-500/5 transition cursor-pointer appearance-none"
+              >
+                <option value="draft">Bản nháp (Draft)</option>
+                <option value="published">Xuất bản (Published)</option>
+                <option value="archived">Lưu trữ (Archived)</option>
+              </select>
+            </div>
           </div>
 
           <!-- Panorama Image Picker -->
           <div>
-            <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Hình ảnh Panorama 360° *</label>
-            <div class="relative w-full aspect-[2/1] rounded-xl overflow-hidden border border-slate-200 bg-slate-50 flex flex-col items-center justify-center group">
+            <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Hình ảnh Panorama 360° *</label>
+            <div class="relative w-full aspect-[2/1] rounded-xl overflow-hidden border border-slate-200/80 bg-slate-50 flex flex-col items-center justify-center group shadow-inner">
               <img 
                 v-if="modalForm.panoramaImageUrl" 
                 :src="modalForm.panoramaImageUrl" 
                 class="w-full h-full object-cover" 
               />
               <div v-else class="text-center p-6 space-y-2 text-slate-400">
-                <CompassIcon class="w-8 h-8 mx-auto animate-pulse text-slate-300" />
-                <p class="text-xs">Chưa chọn hình ảnh toàn cảnh</p>
+                <CompassIcon class="w-8 h-8 mx-auto animate-pulse text-slate-350 stroke-[1.5]" />
+                <p class="text-xs font-bold text-slate-400">Chưa chọn hình ảnh toàn cảnh</p>
               </div>
               
               <div 
                 v-if="modalForm.panoramaImageUrl" 
-                class="absolute inset-0 bg-slate-900/60 opacity-0 group-hover:opacity-100 transition flex items-center justify-center space-x-2"
+                class="absolute inset-0 bg-slate-955/60 opacity-0 group-hover:opacity-100 transition duration-200 flex items-center justify-center space-x-2"
               >
                 <button 
                   type="button"
                   @click="openMediaSelector"
-                  class="px-3 py-1.5 bg-white text-slate-900 rounded-lg text-xs font-bold hover:bg-slate-50 transition"
+                  class="px-3 py-1.5 bg-white text-slate-950 rounded-lg text-xs font-bold hover:bg-slate-50 transition active:scale-95"
                 >
                   Thay đổi
                 </button>
               </div>
             </div>
 
-            <div v-if="!modalForm.panoramaImageUrl" class="mt-2 flex items-center space-x-2">
+            <div v-if="!modalForm.panoramaImageUrl" class="mt-3 flex items-center space-x-2">
               <button
                 type="button"
                 @click="openMediaSelector"
-                class="py-2 px-3 border border-slate-200 hover:bg-slate-50 text-slate-700 font-semibold rounded-xl text-xs transition flex items-center space-x-1"
+                class="premium-btn py-2 px-3 border border-slate-200 hover:bg-slate-50 text-slate-700 font-bold rounded-xl text-xs transition flex items-center space-x-1"
               >
                 <ImageIcon class="w-3.5 h-3.5" />
-                <span>Chọn từ thư viện</span>
+                <span>Chọn thư viện</span>
               </button>
               
               <button
                 type="button"
                 @click="triggerDirectUpload"
-                class="py-2 px-3 bg-slate-900 hover:bg-slate-800 text-white font-semibold rounded-xl text-xs transition flex items-center space-x-1"
+                class="premium-btn py-2 px-3 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-xl text-xs transition flex items-center space-x-1"
               >
                 <UploadIcon class="w-3.5 h-3.5" />
                 <span>Tải ảnh mới</span>
@@ -340,7 +342,7 @@
           </div>
 
           <!-- Error Message inside Modal -->
-          <div v-if="modalError" class="text-xs font-semibold text-red-600 bg-red-50 p-2.5 rounded-lg border border-red-100">
+          <div v-if="modalError" class="text-xs font-semibold text-red-650 bg-red-50 p-3 rounded-xl border border-red-150">
             {{ modalError }}
           </div>
 
@@ -348,7 +350,7 @@
           <div class="flex items-center space-x-3 pt-4 border-t border-slate-100">
             <button 
               type="submit" 
-              class="flex-grow py-2.5 bg-teal-500 hover:bg-teal-600 text-slate-950 font-bold rounded-xl shadow-lg hover:shadow-teal-500/10 active:scale-[0.98] transition flex items-center justify-center space-x-2 disabled:opacity-50"
+              class="premium-btn flex-grow py-3 bg-teal-700 hover:bg-teal-855 text-white font-bold rounded-xl shadow-lg hover:shadow-teal-700/10 active:scale-[0.98] transition flex items-center justify-center space-x-2 disabled:opacity-50"
               :disabled="submitting"
             >
               <Loader2Icon v-if="submitting" class="w-4 h-4 animate-spin" />
@@ -357,7 +359,7 @@
             <button 
               type="button"
               @click="closeFormModal"
-              class="px-4 py-2.5 border border-slate-200 hover:bg-slate-50 text-slate-600 font-semibold rounded-xl text-sm transition"
+              class="premium-btn px-4 py-3 border border-slate-200 hover:bg-slate-50 text-slate-500 font-bold rounded-xl text-sm transition"
               :disabled="submitting"
             >
               Hủy bỏ
@@ -370,51 +372,51 @@
     <!-- Photo Sphere Viewer Initial View Modal -->
     <div 
       v-if="showInitialViewModal" 
-      class="fixed inset-0 z-50 overflow-y-auto bg-slate-900/80 backdrop-blur-sm flex items-center justify-center p-4"
+      class="fixed inset-0 z-50 overflow-y-auto bg-slate-950/75 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in"
     >
-      <div class="bg-slate-950 text-slate-100 rounded-2xl w-full max-w-4xl shadow-2xl border border-slate-800/80 overflow-hidden flex flex-col">
+      <div class="bg-slate-900 text-slate-100 rounded-3xl w-full max-w-4xl shadow-2xl border border-slate-800 overflow-hidden flex flex-col animate-scale-up">
         <!-- Header -->
-        <div class="p-6 border-b border-slate-800 flex justify-between items-center">
+        <div class="p-6 border-b border-slate-800 flex justify-between items-center bg-slate-900">
           <div class="space-y-1">
-            <h3 class="text-base font-bold text-white flex items-center space-x-2">
-              <CompassIcon class="w-5 h-5 text-teal-400" />
+            <h3 class="text-base font-black text-white flex items-center space-x-2">
+              <CompassIcon class="w-5 h-5 text-teal-400 stroke-[2]" />
               <span>Đặt góc nhìn ban đầu</span>
             </h3>
-            <p class="text-xs text-slate-400">
+            <p class="text-xs text-slate-400 font-medium">
               Xoay chuột hoặc phóng to/thu nhỏ để chọn góc nhìn lý tưởng nhất cho du khách khi mới mở cảnh này.
             </p>
           </div>
           <button 
             type="button"
             @click="closeInitialViewModal"
-            class="p-1.5 hover:bg-slate-900 rounded-lg text-slate-400 hover:text-slate-200 transition"
+            class="p-2 hover:bg-slate-800 rounded-xl text-slate-400 hover:text-slate-200 transition"
           >
             <XIcon class="w-5 h-5" />
           </button>
         </div>
 
         <!-- 360 Viewer Canvas Container -->
-        <div class="relative w-full h-[450px] bg-black">
+        <div class="relative w-full h-[450px] bg-slate-950">
           <div ref="viewerContainer" class="w-full h-full"></div>
           
           <!-- Crosshair Center Overlay -->
           <div class="absolute inset-0 pointer-events-none flex items-center justify-center opacity-30">
-            <div class="w-6 h-6 border-2 border-dashed border-teal-400 rounded-full flex items-center justify-center">
-              <div class="w-1.5 h-1.5 bg-teal-400 rounded-full"></div>
+            <div class="w-8 h-8 border-2 border-dashed border-teal-450 rounded-full flex items-center justify-center">
+              <div class="w-1.5 h-1.5 bg-teal-455 rounded-full animate-ping"></div>
             </div>
           </div>
         </div>
 
         <!-- Actions -->
-        <div class="p-6 border-t border-slate-800 bg-slate-900/50 flex items-center justify-between">
-          <div class="text-xs text-slate-400 font-mono hidden sm:block">
+        <div class="p-6 border-t border-slate-800 bg-slate-900 flex items-center justify-between">
+          <div class="text-xs text-slate-450 font-bold font-mono hidden sm:block">
             Nhấn và kéo để điều chỉnh camera
           </div>
           <div class="flex items-center space-x-3 w-full sm:w-auto">
             <button 
               type="button"
               @click="saveInitialView"
-              class="flex-grow sm:flex-grow-0 px-6 py-2.5 bg-teal-500 hover:bg-teal-600 text-slate-950 font-bold rounded-xl shadow-lg hover:shadow-teal-500/10 active:scale-[0.98] transition flex items-center justify-center space-x-2 disabled:opacity-50"
+              class="premium-btn flex-grow sm:flex-grow-0 px-6 py-3 bg-teal-700 hover:bg-teal-850 text-white font-bold rounded-xl shadow-lg hover:shadow-teal-700/10 active:scale-[0.98] transition flex items-center justify-center space-x-2 disabled:opacity-50"
               :disabled="savingInitialView"
             >
               <Loader2Icon v-if="savingInitialView" class="w-4 h-4 animate-spin" />
@@ -423,7 +425,7 @@
             <button 
               type="button"
               @click="closeInitialViewModal"
-              class="px-5 py-2.5 bg-slate-900 hover:bg-slate-850 border border-slate-800 text-slate-300 font-semibold rounded-xl text-sm transition"
+              class="premium-btn px-5 py-3 bg-slate-800 hover:bg-slate-750 border border-slate-700 text-slate-300 font-bold rounded-xl text-sm transition"
               :disabled="savingInitialView"
             >
               Hủy bỏ
@@ -436,20 +438,20 @@
     <!-- Media Library Selector Modal -->
     <div 
       v-if="showMediaSelector" 
-      class="fixed inset-0 z-[60] overflow-y-auto bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4"
+      class="fixed inset-0 z-[60] overflow-y-auto bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in"
       @click.self="closeMediaSelector"
     >
-      <div class="bg-white rounded-2xl w-full max-w-2xl shadow-2xl border border-slate-100 overflow-hidden flex flex-col max-h-[80vh]">
+      <div class="bg-white rounded-3xl w-full max-w-2xl shadow-2xl border border-slate-100 overflow-hidden flex flex-col max-h-[80vh] animate-scale-up">
         <!-- Header -->
         <div class="p-6 border-b border-slate-100 flex justify-between items-center">
           <div class="space-y-1">
-            <h3 class="text-base font-bold text-slate-800">Chọn ảnh từ thư viện</h3>
+            <h3 class="text-base font-black text-slate-800">Chọn ảnh từ thư viện</h3>
             <p class="text-xs text-slate-500 font-medium">Chỉ hỗ trợ ảnh panorama hoặc ảnh thường.</p>
           </div>
           <button 
             type="button"
             @click="closeMediaSelector"
-            class="p-1.5 hover:bg-slate-100 rounded-lg text-slate-400 hover:text-slate-600 transition"
+            class="p-2 hover:bg-slate-100 rounded-xl text-slate-400 hover:text-slate-600 transition"
           >
             <XIcon class="w-5 h-5" />
           </button>
@@ -457,15 +459,15 @@
 
         <!-- Modal Upload Section inside Selector -->
         <div class="px-6 py-4 bg-slate-50 border-b border-slate-100 flex items-center justify-between">
-          <span class="text-xs text-slate-500 font-medium">Tải ảnh mới:</span>
+          <span class="text-xs text-slate-500 font-bold">Tải ảnh mới:</span>
           <button 
             type="button"
             @click="triggerModalUpload"
-            class="px-3 py-1.5 bg-teal-500 hover:bg-teal-600 text-slate-950 font-bold rounded-lg text-xs transition flex items-center space-x-1"
+            class="premium-btn px-3.5 py-2 bg-teal-700 hover:bg-teal-850 text-white font-bold rounded-xl text-xs transition flex items-center space-x-1 shadow-sm"
             :disabled="modalUploading"
           >
-            <Loader2Icon v-if="modalUploading" class="w-3 h-3 animate-spin" />
-            <UploadIcon v-else class="w-3 h-3" />
+            <Loader2Icon v-if="modalUploading" class="w-3.5 h-3.5 animate-spin" />
+            <UploadIcon v-else class="w-3.5 h-3.5 stroke-[2.5]" />
             <span>Tải lên</span>
           </button>
           <input 
@@ -478,13 +480,13 @@
         </div>
 
         <!-- Content Area -->
-        <div class="p-6 overflow-y-auto flex-1 min-h-[200px]">
+        <div class="p-6 overflow-y-auto flex-1 min-h-[200px] bg-white">
           <div v-if="selectorLoading" class="grid grid-cols-4 gap-3 animate-pulse">
             <div v-for="i in 8" :key="i" class="aspect-square bg-slate-100 rounded-xl"></div>
           </div>
 
           <div v-else-if="selectorImages.length === 0" class="text-center py-12 space-y-3">
-            <ImageIcon class="w-8 h-8 mx-auto text-slate-300" />
+            <ImageIcon class="w-8 h-8 mx-auto text-slate-350" />
             <p class="text-sm font-medium text-slate-500">Thư viện ảnh trống.</p>
           </div>
 
@@ -504,7 +506,7 @@
                 class="absolute inset-0 bg-teal-500/10 flex items-center justify-center"
               >
                 <div class="p-1 bg-teal-500 text-slate-950 rounded-full shadow-md">
-                  <CheckIcon class="w-3 h-3" />
+                  <CheckIcon class="w-3 h-3 stroke-[2.5]" />
                 </div>
               </div>
             </div>
@@ -516,13 +518,13 @@
           v-if="selectorImages.length > 0 && selectorTotalPages > 1"
           class="p-4 bg-slate-50 border-t border-slate-100 flex justify-between items-center text-xs"
         >
-          <span class="text-slate-500 font-medium">Trang {{ selectorPage }} / {{ selectorTotalPages }}</span>
+          <span class="text-slate-550 font-bold">Trang {{ selectorPage }} / {{ selectorTotalPages }}</span>
           <div class="flex items-center space-x-2">
             <button 
               type="button"
               @click="selectorPrevPage"
               :disabled="selectorPage === 1"
-              class="px-2.5 py-1 bg-white border border-slate-200 rounded-md hover:bg-slate-50 transition disabled:opacity-40"
+              class="premium-btn px-2.5 py-1.5 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition disabled:opacity-40 shadow-sm"
             >
               Trước
             </button>
@@ -530,7 +532,7 @@
               type="button"
               @click="selectorNextPage"
               :disabled="selectorPage === selectorTotalPages"
-              class="px-2.5 py-1 bg-white border border-slate-200 rounded-md hover:bg-slate-50 transition disabled:opacity-40"
+              class="premium-btn px-2.5 py-1.5 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition disabled:opacity-40 shadow-sm"
             >
               Sau
             </button>
