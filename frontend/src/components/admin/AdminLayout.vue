@@ -2,9 +2,9 @@
   <div class="min-h-screen bg-slate-50 flex font-sans">
     <!-- Sidebar for Desktop -->
     <aside 
-      class="bg-slate-950 text-slate-200 w-64 flex-shrink-0 flex flex-col justify-between transition-all duration-300 border-r border-slate-800/50 hidden md:flex"
+      class="bg-slate-950 text-slate-200 w-64 h-screen sticky top-0 flex-shrink-0 flex flex-col justify-between transition-all duration-300 border-r border-slate-800/50 hidden md:flex"
     >
-      <div class="flex flex-col">
+      <div class="flex flex-col overflow-y-auto flex-grow sidebar-scrollable">
         <!-- Logo Section -->
         <div class="p-6 border-b border-slate-900 flex items-center justify-between">
           <span class="text-xl font-black tracking-wider text-teal-400">SMART TOURISM 360</span>
@@ -324,5 +324,14 @@ const handleLogout = () => {
 /* Ensure smooth mobile menu side sliding drawer transition */
 aside {
   will-change: transform;
+}
+/* Hide scrollbar for Chrome, Safari and Opera */
+.sidebar-scrollable::-webkit-scrollbar {
+  display: none;
+}
+/* Hide scrollbar for IE, Edge and Firefox */
+.sidebar-scrollable {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
 }
 </style>
