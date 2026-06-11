@@ -36,6 +36,7 @@ namespace SmartTourism360.Infrastructure.Services
                     ".jpg" or ".jpeg" or ".png" or ".webp" or ".gif" => "image",
                     ".mp4" => "video",
                     ".mp3" or ".wav" => "audio",
+                    ".glb" or ".gltf" => "model3d",
                     _ => "unknown"
                 };
             }
@@ -52,6 +53,7 @@ namespace SmartTourism360.Infrastructure.Services
                 "panorama" => 15 * 1024 * 1024,
                 "video" => 50 * 1024 * 1024,
                 "audio" => 10 * 1024 * 1024,
+                "model3d" => 50 * 1024 * 1024,
                 _ => 5 * 1024 * 1024
             };
 

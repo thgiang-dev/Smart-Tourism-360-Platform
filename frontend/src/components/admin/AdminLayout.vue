@@ -74,6 +74,15 @@
             <BarChart3Icon class="w-5 h-5" />
             <span>Thống kê</span>
           </router-link>
+
+          <router-link 
+            to="/admin/models-3d"
+            active-class="bg-teal-700/20 text-teal-400 font-semibold border-l-4 border-teal-500"
+            class="flex items-center space-x-3 px-4 py-3 rounded-lg text-slate-400 hover:bg-slate-900 hover:text-slate-100 transition duration-150"
+          >
+            <BoxIcon class="w-5 h-5" />
+            <span>Mô hình 3D</span>
+          </router-link>
         </nav>
       </div>
 
@@ -188,6 +197,16 @@
             <BarChart3Icon class="w-5 h-5" />
             <span>Thống kê</span>
           </router-link>
+
+          <router-link 
+            to="/admin/models-3d"
+            active-class="bg-teal-700/20 text-teal-400 font-semibold border-l-4 border-teal-500"
+            @click="isMobileMenuOpen = false"
+            class="flex items-center space-x-3 px-4 py-3 rounded-lg text-slate-400 hover:bg-slate-900 hover:text-slate-100 transition duration-150"
+          >
+            <BoxIcon class="w-5 h-5" />
+            <span>Mô hình 3D</span>
+          </router-link>
         </nav>
       </div>
 
@@ -258,7 +277,8 @@ import {
   BarChart3 as BarChart3Icon,
   LogOut as LogOutIcon, 
   Menu as MenuIcon, 
-  X as XIcon 
+  X as XIcon,
+  Box as BoxIcon
 } from 'lucide-vue-next'
 
 const router = useRouter()
@@ -288,6 +308,9 @@ const pageTitle = computed(() => {
   if (route.name === 'AdminEditRoute') return 'Chỉnh sửa Tuyến tham quan'
   if (route.name === 'AdminRouteDestinations') return 'Thiết lập Địa điểm cho Tuyến'
   if (route.name === 'AdminAnalytics') return 'Thống kê & Phân tích hành vi'
+  if (route.name === 'AdminModels3D') return 'Quản lý Mô hình 3D'
+  if (route.name === 'AdminCreateModel3D') return 'Tạo Mô hình 3D mới'
+  if (route.name === 'AdminEditModel3D') return 'Chỉnh sửa Mô hình 3D'
   return 'Hệ thống Quản trị'
 })
 

@@ -100,7 +100,7 @@
           />
           
           <!-- Badges -->
-          <div class="absolute top-4 left-4 flex flex-col gap-2 relative z-10">
+          <div class="absolute top-4 left-4 flex flex-col gap-2 z-10">
             <span 
               v-if="tour?.defaultPanoramaId === pano.id"
               class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-black bg-teal-500 text-slate-950 shadow-md"

@@ -46,6 +46,17 @@
 
       <!-- Right Help & Info Panel -->
       <div class="flex items-center space-x-2 pointer-events-auto">
+        <!-- Floating 3D model icon for active panorama -->
+        <button 
+          v-if="panoramaModels && panoramaModels.length > 0"
+          @click="previewingModel = panoramaModels[0]" 
+          class="p-2.5 bg-teal-600 hover:bg-teal-500 border border-teal-500/20 text-slate-955 font-black rounded-xl flex items-center space-x-1.5 transition active:scale-95 shadow-xl font-sans"
+          title="Xem mô hình 3D của cảnh này"
+        >
+          <BoxIcon class="w-4 h-4 stroke-[2.5]" />
+          <span class="text-xs hidden md:inline">Xem mô hình 3D</span>
+        </button>
+
         <button 
           @click="showHelp = !showHelp" 
           class="p-2.5 bg-slate-950/60 backdrop-blur-md border border-white/10 hover:bg-slate-900 rounded-xl text-slate-300 hover:text-white transition shadow-xl"
@@ -313,13 +324,44 @@
               <video :src="previewingHotspot.mediaUrl" controls autoplay class="w-full h-full"></video>
             </div>
 
-            <!-- 3D Model Placeholder -->
-            <div v-else-if="previewingHotspot.type === 'model3d'" class="text-center py-12 space-y-4 border border-dashed border-teal-500/20 bg-teal-500/[0.02] rounded-2xl">
-              <CompassIcon class="w-12 h-12 mx-auto animate-spin text-teal-400" />
-              <div class="space-y-1">
-                <p class="text-xs font-bold text-slate-200">Mô hình 3D thực tế tăng cường</p>
-                <p class="text-[10px] text-slate-500">Tính năng đang được chuẩn bị và sẽ triển khai tại Sprint 10.</p>
-              </div>
+            <!-- 3D Model Viewer in Hotspot -->
+            <div v-else-if="previewingHotspot.type === 'model3d' && previewingHotspot.mediaUrl" class="w-full rounded-2xl overflow-hidden bg-black border border-slate-800 flex items-center justify-center aspect-[4/3] relative">
+              <ModelViewer :src="previewingHotspot.mediaUrl" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </Transition>
+
+    <!-- 3D Model Modal (For Panorama/Virtual Tour level 3D models) -->
+    <Transition name="fade">
+      <div 
+        v-if="previewingModel"
+        class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4"
+        @click.self="previewingModel = null"
+      >
+        <div class="bg-slate-900 border border-slate-800 text-white rounded-3xl w-full max-w-lg shadow-2xl overflow-hidden flex flex-col max-h-[85vh]">
+          <!-- Modal Header -->
+          <div class="p-5 border-b border-slate-800 flex justify-between items-center bg-slate-950/40">
+            <div>
+              <span class="text-[9px] font-bold uppercase tracking-wider text-teal-400 block mb-0.5">Không gian 3D</span>
+              <h4 class="font-black text-sm text-white">{{ previewingModel.title }}</h4>
+            </div>
+            <button @click="previewingModel = null" class="p-1.5 hover:bg-white/10 rounded-xl text-slate-400 hover:text-white transition">
+              <XIcon class="w-5 h-5" />
+            </button>
+          </div>
+
+          <!-- Modal Body -->
+          <div class="p-6 overflow-y-auto space-y-4 flex flex-col">
+            <!-- Text Description if present -->
+            <p v-if="previewingModel.description" class="text-xs text-slate-300 leading-relaxed whitespace-pre-line bg-slate-950/40 p-4 rounded-xl border border-white/5">
+              {{ previewingModel.description }}
+            </p>
+
+            <!-- 3D Model Viewer -->
+            <div class="w-full rounded-2xl overflow-hidden bg-black border border-slate-800 flex items-center justify-center aspect-[4/3] relative">
+              <ModelViewer :src="previewingModel.modelUrl" />
             </div>
           </div>
         </div>
@@ -350,6 +392,7 @@ import { ref, onMounted, onBeforeUnmount, nextTick, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import api from '../utils/api'
 import { trackEvent } from '../services/analytics'
+import ModelViewer from '../components/public/ModelViewer.vue'
 import { Viewer } from '@photo-sphere-viewer/core'
 import { MarkersPlugin } from '@photo-sphere-viewer/markers-plugin'
 import '@photo-sphere-viewer/core/index.css'
@@ -365,7 +408,8 @@ import {
   Pause as PauseIcon,
   AlertCircle as AlertCircleIcon,
   Maximize as MaximizeIcon,
-  Minimize as MinimizeIcon
+  Minimize as MinimizeIcon,
+  Box as BoxIcon
 } from 'lucide-vue-next'
 
 const route = useRoute()
@@ -392,6 +436,25 @@ const audioProgressBarRef = ref(null)
 
 // Media Lightbox popup state
 const previewingHotspot = ref(null)
+const panoramaModels = ref([])
+const previewingModel = ref(null)
+
+const fetchPanoramaModels = async (panoId) => {
+  try {
+    const res = await api.get(`/api/panoramas/${panoId}/models-3d`)
+    if (res.success) {
+      panoramaModels.value = res.data || []
+    }
+  } catch (err) {
+    console.warn('Failed to load panorama 3D models:', err)
+  }
+}
+
+watch(activePanorama, (newVal) => {
+  if (newVal) {
+    fetchPanoramaModels(newVal.id)
+  }
+}, { immediate: true })
 
 // Photo Sphere Viewer Instance variables
 const viewerContainer = ref(null)

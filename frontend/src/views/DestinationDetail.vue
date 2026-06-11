@@ -98,6 +98,35 @@
             </div>
           </div>
 
+          <!-- 3D Model Section -->
+          <div 
+            v-if="models3D && models3D.length > 0"
+            class="bg-white p-6 md:p-10 rounded-3xl border border-slate-200/80 shadow-sm space-y-5"
+          >
+            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+              <div class="flex items-center space-x-2.5">
+                <div class="p-2 bg-teal-500/10 text-teal-600 rounded-xl">
+                  <BoxIcon class="w-5 h-5 text-teal-600" />
+                </div>
+                <div>
+                  <h2 class="text-xs font-black text-slate-800 uppercase tracking-wider">Không gian Mô hình 3D</h2>
+                  <p class="text-[9px] text-slate-400 font-bold uppercase tracking-wider">Interactive 3D Model</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="space-y-4">
+              <h3 class="text-sm font-bold text-slate-800">{{ models3D[0].title }}</h3>
+              <p v-if="models3D[0].description" class="text-xs text-slate-500 leading-relaxed">{{ models3D[0].description }}</p>
+              
+              <ModelViewer 
+                :src="models3D[0].modelUrl" 
+                :thumbnail-url="models3D[0].thumbnailUrl"
+                lazy 
+              />
+            </div>
+          </div>
+
           <!-- Premium Audio Guide Component (renders if guides exist) -->
           <div 
             v-if="detail.audioGuides && detail.audioGuides.length > 0"
@@ -391,6 +420,7 @@ import { useRoute, useRouter } from 'vue-router'
 import api from '../utils/api'
 import { trackEvent } from '../services/analytics'
 import L from 'leaflet'
+import ModelViewer from '../components/public/ModelViewer.vue'
 import { 
   AlertCircle as AlertCircleIcon,
   MapPin as MapPinIcon,
@@ -410,7 +440,8 @@ import {
   Pause as PauseIcon,
   Headphones as HeadphonesIcon,
   Map as MapIcon,
-  ChevronDown as ChevronDownIcon
+  ChevronDown as ChevronDownIcon,
+  Box as BoxIcon
 } from 'lucide-vue-next'
 
 // Redefine Leaflet default icon paths to prevent broken marker images under Vite/bundler
@@ -427,6 +458,7 @@ const router = useRouter()
 const loading = ref(false)
 const error = ref(null)
 const detail = ref(null)
+const models3D = ref([])
 
 // Gallery Lightbox Controls
 const lightboxOpen = ref(false)
@@ -466,6 +498,16 @@ const fetchDestinationDetail = async () => {
         targetType: 'destination',
         targetId: response.data.id
       })
+
+      // Fetch 3D models for the destination
+      try {
+        const modelsRes = await api.get(`/api/destinations/${response.data.id}/models-3d`)
+        if (modelsRes.success) {
+          models3D.value = modelsRes.data || []
+        }
+      } catch (err) {
+        console.warn('Failed to load 3D models:', err)
+      }
     }
   } catch (err) {
     error.value = err.message || 'Không thể tải thông tin chi tiết địa điểm.'

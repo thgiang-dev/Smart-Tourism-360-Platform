@@ -23,6 +23,7 @@ namespace SmartTourism360.Infrastructure.Data
         public DbSet<Route> Routes { get; set; } = null!;
         public DbSet<RouteDestination> RouteDestinations { get; set; } = null!;
         public DbSet<AnalyticsEvent> AnalyticsEvents { get; set; } = null!;
+        public DbSet<Model3D> Models3D { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -242,6 +243,24 @@ namespace SmartTourism360.Infrastructure.Data
                 entity.HasOne(e => e.User)
                     .WithMany()
                     .HasForeignKey(e => e.UserId)
+                    .OnDelete(DeleteBehavior.SetNull);
+            });
+
+            // --- Cấu hình bảng Models3D ---
+            modelBuilder.Entity<Model3D>(entity =>
+            {
+                entity.ToTable("models_3d");
+                entity.HasIndex(m => m.Status);
+                entity.HasIndex(m => new { m.TargetType, m.TargetId });
+
+                entity.HasOne(m => m.Media)
+                    .WithMany()
+                    .HasForeignKey(m => m.MediaId)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(m => m.Thumbnail)
+                    .WithMany()
+                    .HasForeignKey(m => m.ThumbnailId)
                     .OnDelete(DeleteBehavior.SetNull);
             });
         }

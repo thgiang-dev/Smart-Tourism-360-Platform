@@ -459,10 +459,9 @@
             <audio ref="audioPlayer" :src="previewingHotspot.mediaUrl" class="hidden" @ended="audioPlaying = false"></audio>
           </div>
 
-          <!-- Model 3D Placeholder -->
-          <div v-else-if="previewingHotspot.type === 'model3d'" class="text-center py-8 space-y-3 text-slate-400">
-            <CompassIcon class="w-12 h-12 mx-auto animate-spin text-teal-400" />
-            <p class="text-xs font-bold text-slate-300">Khởi chạy Mô hình 3D thực tế ảo...</p>
+          <!-- Model 3D Preview -->
+          <div v-else-if="previewingHotspot.type === 'model3d' && previewingHotspot.mediaUrl" class="w-full aspect-[4/3] rounded-xl overflow-hidden bg-black flex items-center justify-center border border-white/5 shadow-lg relative">
+            <ModelViewer :src="previewingHotspot.mediaUrl" />
           </div>
 
           <!-- Info Fallback -->
@@ -483,6 +482,7 @@ import { useToastStore } from '../../stores/toast'
 import { useConfirmStore } from '../../stores/confirm'
 import { Viewer } from '@photo-sphere-viewer/core'
 import { MarkersPlugin } from '@photo-sphere-viewer/markers-plugin'
+import ModelViewer from '../../components/public/ModelViewer.vue'
 import '@photo-sphere-viewer/core/index.css'
 import '@photo-sphere-viewer/markers-plugin/index.css'
 

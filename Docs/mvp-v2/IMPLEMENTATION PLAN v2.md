@@ -133,7 +133,7 @@ Hãy nâng cấp toàn bộ dự án lên v2.
 | Sprint 14 | Analytics & Tracking | Ghi nhận hành vi người dùng | Dashboard thống kê cơ bản | [ ] Chưa thực hiện |
 | Sprint 15 | Multi-language Support | Song ngữ Việt \- Anh | Public data hỗ trợ languageCode | [ ] Chưa thực hiện |
 | Sprint 16 | CesiumJS 3D Map | Bản đồ 3D/WebGIS | Trang `/explore-3d` với marker 3D | [ ] Chưa thực hiện |
-| Sprint 17 | 3D Model Viewer | Upload/xem model 3D | Admin upload `.glb`, du khách xem model | [ ] Chưa thực hiện |
+| Sprint 17 | 3D Model Viewer | Upload/xem model 3D | Admin upload `.glb`, du khách xem model | [x] Đã hoàn thành |
 | Sprint 18 | AI Tour Guide | Trợ lý AI du lịch | Chatbot hỏi đáp dựa trên dữ liệu nội bộ | [ ] Chưa thực hiện |
 
 Ghi chú: Sprint 15 được thêm vào roadmap để lấp khoảng trống giữa Analytics và CesiumJS. Nếu bạn muốn ưu tiên công nghệ cao, Sprint 15 có thể tạm hoãn và chuyển CesiumJS lên trước.
@@ -821,89 +821,89 @@ Ngoài phạm vi:
 
 ## **11.3. Checklist Database**
 
-\- \[ \] Thêm mediaType model3d nếu dùng enum.  
-\- \[ \] Tạo entity Model3D.  
-\- \[ \] Tạo bảng models\_3d.  
-\- \[ \] media\_id.  
-\- \[ \] thumbnail\_id.  
-\- \[ \] target\_type.  
-\- \[ \] target\_id.  
-\- \[ \] format.  
-\- \[ \] polygon\_count.  
-\- \[ \] status.  
-\- \[ \] created\_by/updated\_by.  
-\- \[ \] Tạo migration.
+\- \[x\] Thêm mediaType model3d nếu dùng enum.  
+\- \[x\] Tạo entity Model3D.  
+\- \[x\] Tạo bảng models\_3d.  
+\- \[x\] media\_id.  
+\- \[x\] thumbnail\_id.  
+\- \[x\] target\_type.  
+\- \[x\] target\_id.  
+\- \[x\] format.  
+\- \[x\] polygon\_count.  
+\- \[x\] status.  
+\- \[x\] created\_by/updated\_by.  
+\- \[x\] Tạo migration.
 
 ---
 
 ## **11.4. Checklist Backend API**
 
-\- \[ \] Cập nhật Media Upload hỗ trợ .glb.  
-\- \[ \] Validate .glb/.gltf extension.  
-\- \[ \] Validate file size.  
-\- \[ \] Tạo Model3D DTOs.  
-\- \[ \] Tạo Model3DService.  
-\- \[ \] GET /api/destinations/{destinationId}/models-3d.  
-\- \[ \] GET /api/models-3d/{id}.  
-\- \[ \] GET /api/admin/models-3d.  
-\- \[ \] POST /api/admin/models-3d.  
-\- \[ \] PUT /api/admin/models-3d/{id}.  
-\- \[ \] PATCH /api/admin/models-3d/{id}/status.  
-\- \[ \] DELETE /api/admin/models-3d/{id}.  
-\- \[ \] Public API chỉ trả published.  
-\- \[ \] Admin API yêu cầu JWT.
+\- \[x\] Cập nhật Media Upload hỗ trợ .glb.  
+\- \[x\] Validate .glb/.gltf extension.  
+\- \[x\] Validate file size.  
+\- \[x\] Tạo Model3D DTOs.  
+\- \[x\] Tạo Model3DService.  
+\- \[x\] GET /api/destinations/{destinationId}/models-3d.  
+\- \[x\] GET /api/models-3d/{id}.  
+\- \[x\] GET /api/admin/models-3d.  
+\- \[x\] POST /api/admin/models-3d.  
+\- \[x\] PUT /api/admin/models-3d/{id}.  
+\- \[x\] PATCH /api/admin/models-3d/{id}/status.  
+\- \[x\] DELETE /api/admin/models-3d/{id}.  
+\- \[x\] Public API chỉ trả published.  
+\- \[x\] Admin API yêu cầu JWT.
 
 ---
 
 ## **11.5. Checklist Frontend Public**
 
-\- \[ \] Cài @google/model-viewer.  
-\- \[ \] Tạo ModelViewer.vue.  
-\- \[ \] Tạo ModelSection.vue.  
-\- \[ \] Gọi API model theo destination.  
-\- \[ \] Hiển thị model trong destination detail.  
-\- \[ \] Loading state.  
-\- \[ \] Error state.  
-\- \[ \] Hướng dẫn “Kéo để xoay, cuộn để phóng to”.  
-\- \[ \] Optional: ModelHotspotModal trong tour 360\.
+\- \[x\] Cài @google/model-viewer.  
+\- \[x\] Tạo ModelViewer.vue.  
+\- \[x\] Tạo ModelSection.vue.  
+\- \[x\] Gọi API model theo destination.  
+\- \[x\] Hiển thị model trong destination detail.  
+\- \[x\] Loading state.  
+\- \[x\] Error state.  
+\- \[x\] Hướng dẫn “Kéo để xoay, cuộn để phóng to”.  
+\- \[x\] Optional: ModelHotspotModal trong tour 360\.
 
 ---
 
 ## **11.6. Checklist Frontend Admin**
 
-\- \[ \] Media upload hỗ trợ model3d.  
-\- \[ \] Media Library hiển thị badge model3d.  
-\- \[ \] Tạo /admin/models-3d.  
-\- \[ \] Tạo model list/grid.  
-\- \[ \] Tạo model create/edit form.  
-\- \[ \] Tạo target selector cho destination.  
-\- \[ \] Tạo model preview trong admin.  
-\- \[ \] Publish/archive model.
+\- \[x\] Media upload hỗ trợ model3d.  
+\- \[x\] Media Library hiển thị badge model3d.  
+\- \[x\] Tạo /admin/models-3d.  
+\- \[x\] Tạo model list/grid.  
+\- \[x\] Tạo model create/edit form.  
+\- \[x\] Tạo target selector cho destination.  
+\- \[x\] Tạo model preview trong admin.  
+\- \[x\] Publish/archive model.
 
 ---
 
 ## **11.7. Checklist Storage**
 
-\- \[ \] MinIO upload được .glb.  
-\- \[ \] Browser load được fileUrl.  
-\- \[ \] CORS đúng.  
-\- \[ \] Content-Type không bị chặn.  
-\- \[ \] Không commit model nặng vào repo.  
-\- \[ \] Nếu dùng sample model, ghi credits/license.
+\- \[x\] MinIO upload được .glb.  
+\- \[x\] Browser load được fileUrl.  
+\- \[x\] CORS đúng.  
+\- \[x\] Content-Type không bị chặn.  
+\- \[x\] Không commit model nặng vào repo.  
+\- \[x\] Nếu dùng sample model, ghi credits/license.
 
 ---
 
 ## **11.8. Checklist Test Sprint 17**
 
-\- \[ \] Upload .glb thành công.  
-\- \[ \] Upload file sai định dạng bị chặn.  
-\- \[ \] Admin tạo metadata model.  
-\- \[ \] Admin gắn model với destination.  
-\- \[ \] Public destination detail hiển thị model.  
-\- \[ \] User xoay/zoom model được.  
-\- \[ \] Model lỗi hiển thị error state.  
-\- \[ \] Upload ảnh/audio/panorama cũ vẫn hoạt động.  
-\- \[ \] Tour 360 vẫn hoạt động.
+\- \[x\] Upload .glb thành công.  
+\- \[x\] Upload file sai định dạng bị chặn.  
+\- \[x\] Admin tạo metadata model.  
+\- \[x\] Admin gắn model với destination.  
+\- \[x\] Public destination detail hiển thị model.  
+\- \[x\] User xoay/zoom model được.  
+\- \[x\] Model lỗi hiển thị error state.  
+\- \[x\] Upload ảnh/audio/panorama cũ vẫn hoạt động.  
+\- \[x\] Tour 360 vẫn hoạt động.
 
 ---
 
@@ -911,11 +911,11 @@ Ngoài phạm vi:
 
 Sprint 17 hoàn thành khi:
 
-\- Admin upload được model .glb.  
-\- Model được lưu vào MinIO.  
-\- Metadata lưu trong database.  
-\- Public hiển thị model trong destination detail.  
-\- Không làm hỏng media upload cũ và tour 360\.
+\- \[x\] Admin upload được model .glb.  
+\- \[x\] Model được lưu vào MinIO.  
+\- \[x\] Metadata lưu trong database.  
+\- \[x\] Public hiển thị model trong destination detail.  
+\- \[x\] Không làm hỏng media upload cũ và tour 360\.
 
 ---
 

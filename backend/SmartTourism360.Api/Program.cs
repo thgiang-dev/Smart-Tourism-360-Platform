@@ -57,6 +57,7 @@ builder.Services.AddScoped<IPanoramaService, PanoramaService>();
 builder.Services.AddScoped<IHotspotService, HotspotService>();
 builder.Services.AddScoped<IRouteService, RouteService>();
 builder.Services.AddScoped<IAnalyticsService, AnalyticsService>();
+builder.Services.AddScoped<IModel3DService, Model3DService>();
 
 // Add services to the container and customize Validation Error Response
 builder.Services.AddControllers()

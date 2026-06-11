@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@google/model-viewer": "^4.3.1",
     "@photo-sphere-viewer/core": "^5.6.3",
     "@photo-sphere-viewer/markers-plugin": "^5.6.3",
     "axios": "^1.6.8",

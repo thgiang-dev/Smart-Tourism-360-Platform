@@ -143,6 +143,22 @@ const routes = [
         path: 'analytics',
         name: 'AdminAnalytics',
         component: () => import('../views/admin/Analytics.vue')
+      },
+      {
+        path: 'models-3d',
+        name: 'AdminModels3D',
+        component: () => import('../views/admin/Models3D.vue')
+      },
+      {
+        path: 'models-3d/new',
+        name: 'AdminCreateModel3D',
+        component: () => import('../views/admin/Model3DForm.vue')
+      },
+      {
+        path: 'models-3d/:id/edit',
+        name: 'AdminEditModel3D',
+        component: () => import('../views/admin/Model3DForm.vue'),
+        props: true
       }
     ]
   }
