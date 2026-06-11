@@ -303,6 +303,7 @@
             
             <router-link
               :to="`/destinations/${detail.id}/tour`"
+              @click="trackTourOpen"
               class="premium-btn w-full py-3.5 bg-slate-950 hover:bg-slate-900 text-white font-black rounded-2xl text-xs flex items-center justify-center space-x-2 shadow-lg"
             >
               <span>Vào tham quan ảo</span>
@@ -388,6 +389,7 @@
 import { ref, onMounted, onBeforeUnmount, nextTick } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import api from '../utils/api'
+import { trackEvent } from '../services/analytics'
 import L from 'leaflet'
 import { 
   AlertCircle as AlertCircleIcon,
@@ -457,6 +459,13 @@ const fetchDestinationDetail = async () => {
     if (response.success) {
       detail.value = response.data
       audioGuidesList.value = response.data.audioGuides || []
+      
+      // Track view_destination event
+      trackEvent({
+        eventName: 'view_destination',
+        targetType: 'destination',
+        targetId: response.data.id
+      })
     }
   } catch (err) {
     error.value = err.message || 'Không thể tải thông tin chi tiết địa điểm.'
@@ -520,6 +529,17 @@ const nextLightboxImage = () => {
   lightboxIndex.value = (lightboxIndex.value + 1) % listLen
 }
 
+const trackTourOpen = () => {
+  if (detail.value) {
+    trackEvent({
+      eventName: 'open_virtual_tour',
+      targetType: 'destination',
+      targetId: detail.value.id,
+      metadata: { source: 'destination_detail' }
+    })
+  }
+}
+
 // Audio Player controls
 const toggleAudioPlay = (url) => {
   const audio = audioTagRef.value?.[0]
@@ -532,6 +552,17 @@ const toggleAudioPlay = (url) => {
     audio.src = url
     audio.play()
     audioPlaying.value = true
+
+    // Track play_audio event
+    const activeGuide = audioGuidesList.value.find(g => g.audioUrl === url)
+    if (activeGuide) {
+      trackEvent({
+        eventName: 'play_audio',
+        targetType: 'audio',
+        targetId: activeGuide.id,
+        metadata: { title: activeGuide.title, destinationId: detail.value?.id }
+      })
+    }
   } else {
     if (audioPlaying.value) {
       audio.pause()

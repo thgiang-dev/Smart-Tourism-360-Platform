@@ -56,6 +56,7 @@ builder.Services.AddScoped<IVirtualTourService, VirtualTourService>();
 builder.Services.AddScoped<IPanoramaService, PanoramaService>();
 builder.Services.AddScoped<IHotspotService, HotspotService>();
 builder.Services.AddScoped<IRouteService, RouteService>();
+builder.Services.AddScoped<IAnalyticsService, AnalyticsService>();
 
 // Add services to the container and customize Validation Error Response
 builder.Services.AddControllers()

@@ -54,6 +54,11 @@ const routes = [
     component: Explore
   },
   {
+    path: '/explore-3d',
+    name: 'Explore3D',
+    component: () => import('../views/CesiumMapPage.vue')
+  },
+  {
     path: '/destinations/:id/tour',
     name: 'TourViewer',
     component: TourViewer
@@ -133,6 +138,11 @@ const routes = [
         name: 'AdminRouteDestinations',
         component: () => import('../views/admin/RouteDestinations.vue'),
         props: true
+      },
+      {
+        path: 'analytics',
+        name: 'AdminAnalytics',
+        component: () => import('../views/admin/Analytics.vue')
       }
     ]
   }

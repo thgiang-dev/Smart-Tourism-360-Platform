@@ -349,6 +349,7 @@
 import { ref, onMounted, onBeforeUnmount, nextTick, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import api from '../utils/api'
+import { trackEvent } from '../services/analytics'
 import { Viewer } from '@photo-sphere-viewer/core'
 import { MarkersPlugin } from '@photo-sphere-viewer/markers-plugin'
 import '@photo-sphere-viewer/core/index.css'
@@ -477,6 +478,13 @@ const loadTourData = async () => {
     
     if (response.success) {
       tour.value = response.data
+      
+      // Track open_virtual_tour event
+      trackEvent({
+        eventName: 'open_virtual_tour',
+        targetType: 'tour',
+        targetId: response.data.id
+      })
       
       if (!tour.value.panoramas || tour.value.panoramas.length === 0) {
         throw new Error("Tour du lịch 360° này chưa có cảnh panorama nào được xuất bản.")
@@ -607,6 +615,14 @@ const initViewer = () => {
     ]
   })
 
+  // Track view_panorama for initial scene load
+  trackEvent({
+    eventName: 'view_panorama',
+    targetType: 'panorama',
+    targetId: activePanorama.value.id,
+    metadata: { tourId: tour.value?.id }
+  })
+
   markersPluginInstance = viewerInstance.getPlugin(MarkersPlugin)
 
   // Listen to fullscreen state changes
@@ -633,41 +649,78 @@ const initViewer = () => {
 const handleHotspotInteraction = (h) => {
   resetIdle()
   if (h.type === 'navigation') {
+    // Track navigate_panorama
+    trackEvent({
+      eventName: 'navigate_panorama',
+      targetType: 'hotspot',
+      targetId: h.id,
+      metadata: { tourId: tour.value?.id, fromPanoramaId: activePanorama.value?.id, toPanoramaId: h.targetPanoramaId }
+    })
+
     // Traverse scenes in place
     const targetScene = tour.value.panoramas.find(p => p.id === h.targetPanoramaId)
     if (targetScene) {
       transitionToScene(targetScene)
     }
-  } else if (h.type === 'audio') {
-    // Launch audio player at footer
-    activeAudio.value = h
-    audioPlaying.value = false
-    audioCurrentTime.value = 0
-    audioProgress.value = 0
-    
-    // Stop old audio if playing
-    if (audioRef.value) {
-      audioRef.value.pause()
-    }
-    
-    // Autoplay new audio on nextTick
-    nextTick(() => {
-      if (audioRef.value) {
-        audioRef.value.src = h.mediaUrl
-        audioRef.value.play().then(() => {
-          audioPlaying.value = true
-        }).catch(err => {
-          console.warn("Autoplay audio blocked by browser settings.", err)
-        })
-      }
-    })
-  } else if (h.type === 'link') {
-    if (h.externalUrl) {
-      window.open(h.externalUrl, '_blank')
-    }
   } else {
-    // Open image, video, info, or 3d details popups
-    previewingHotspot.value = h
+    // Track click_hotspot
+    trackEvent({
+      eventName: 'click_hotspot',
+      targetType: 'hotspot',
+      targetId: h.id,
+      metadata: { hotspotType: h.type, tourId: tour.value?.id, panoramaId: activePanorama.value?.id }
+    })
+
+    if (h.type === 'audio') {
+      // Track play_audio event
+      trackEvent({
+        eventName: 'play_audio',
+        targetType: 'audio',
+        targetId: h.id,
+        metadata: { title: h.title, tourId: tour.value?.id }
+      })
+
+      // Launch audio player at footer
+      activeAudio.value = h
+      audioPlaying.value = false
+      audioCurrentTime.value = 0
+      audioProgress.value = 0
+      
+      // Stop old audio if playing
+      if (audioRef.value) {
+        audioRef.value.pause()
+      }
+      
+      // Autoplay new audio on nextTick
+      nextTick(() => {
+        if (audioRef.value) {
+          audioRef.value.src = h.mediaUrl
+          audioRef.value.play().then(() => {
+            audioPlaying.value = true
+          }).catch(err => {
+            console.warn("Autoplay audio blocked by browser settings.", err)
+          })
+        }
+      })
+    } else if (h.type === 'video') {
+      // Track play_video event
+      trackEvent({
+        eventName: 'play_video',
+        targetType: 'video',
+        targetId: h.id,
+        metadata: { title: h.title, tourId: tour.value?.id }
+      })
+
+      // Open image, video, info, or 3d details popups
+      previewingHotspot.value = h
+    } else if (h.type === 'link') {
+      if (h.externalUrl) {
+        window.open(h.externalUrl, '_blank')
+      }
+    } else {
+      // Open image, video, info, or 3d details popups
+      previewingHotspot.value = h
+    }
   }
 }
 
@@ -711,6 +764,14 @@ const transitionToScene = (scene) => {
 
 const onSceneChanged = (scene) => {
   activePanorama.value = scene
+
+  // Track view_panorama for transitioned scene
+  trackEvent({
+    eventName: 'view_panorama',
+    targetType: 'panorama',
+    targetId: scene.id,
+    metadata: { tourId: tour.value?.id }
+  })
   
   // Align view to initial values
   const targetYaw = parseFloat(scene.initialYaw) || 0

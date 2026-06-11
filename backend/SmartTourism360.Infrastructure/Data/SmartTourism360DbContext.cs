@@ -22,6 +22,7 @@ namespace SmartTourism360.Infrastructure.Data
         public DbSet<AudioGuide> AudioGuides { get; set; } = null!;
         public DbSet<Route> Routes { get; set; } = null!;
         public DbSet<RouteDestination> RouteDestinations { get; set; } = null!;
+        public DbSet<AnalyticsEvent> AnalyticsEvents { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -222,6 +223,26 @@ namespace SmartTourism360.Infrastructure.Data
                     .WithMany()
                     .HasForeignKey(rd => rd.DestinationId)
                     .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            // --- Cấu hình bảng AnalyticsEvents ---
+            modelBuilder.Entity<AnalyticsEvent>(entity =>
+            {
+                entity.ToTable("analytics_events");
+                
+                entity.HasIndex(e => e.EventName);
+                entity.HasIndex(e => new { e.TargetType, e.TargetId });
+                entity.HasIndex(e => e.CreatedAt);
+                entity.HasIndex(e => e.SessionId);
+                entity.HasIndex(e => e.UserId);
+
+                entity.Property(e => e.Metadata)
+                    .HasColumnType("jsonb");
+
+                entity.HasOne(e => e.User)
+                    .WithMany()
+                    .HasForeignKey(e => e.UserId)
+                    .OnDelete(DeleteBehavior.SetNull);
             });
         }
     }

@@ -9,20 +9,23 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "vue": "^3.5.34",
-    "vue-router": "^4.3.0",
-    "pinia": "^2.1.7",
-    "axios": "^1.6.8",
-    "lucide-vue-next": "^0.368.0",
-    "leaflet": "^1.9.4",
     "@photo-sphere-viewer/core": "^5.6.3",
-    "@photo-sphere-viewer/markers-plugin": "^5.6.3"
+    "@photo-sphere-viewer/markers-plugin": "^5.6.3",
+    "axios": "^1.6.8",
+    "cesium": "^1.142.0",
+    "chart.js": "^4.5.1",
+    "leaflet": "^1.9.4",
+    "lucide-vue-next": "^0.368.0",
+    "pinia": "^2.1.7",
+    "vue": "^3.5.34",
+    "vue-router": "^4.3.0"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.0.4",
-    "vite": "^5.2.0",
-    "tailwindcss": "^3.4.1",
+    "autoprefixer": "^10.4.19",
     "postcss": "^8.4.38",
-    "autoprefixer": "^10.4.19"
+    "tailwindcss": "^3.4.1",
+    "vite": "^5.2.0",
+    "vite-plugin-cesium": "^1.2.23"
   }
 }

@@ -89,7 +89,10 @@
               </div>
 
               <!-- Destination Row Card -->
-              <div class="bg-slate-50/50 hover:bg-slate-50 p-5 rounded-2xl border border-slate-200/40 hover:border-slate-200 transition-all flex flex-col sm:flex-row gap-5 items-start">
+              <div 
+                @click="trackRouteDestinationClick(dest, index)"
+                class="bg-slate-50/50 hover:bg-slate-50 p-5 rounded-2xl border border-slate-200/40 hover:border-slate-200 transition-all flex flex-col sm:flex-row gap-5 items-start cursor-pointer"
+              >
                 <!-- Cover Image -->
                 <div class="w-full sm:w-36 h-24 rounded-xl overflow-hidden bg-slate-100 flex-shrink-0">
                   <img 
@@ -126,6 +129,7 @@
                 <div class="flex sm:flex-col gap-2 w-full sm:w-auto self-stretch justify-end">
                   <router-link 
                     :to="`/destinations/${dest.destinationId}`"
+                    @click.stop="trackOpenDestinationFromRoute(dest)"
                     class="flex-1 sm:flex-none text-center px-4 py-2 bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 text-xs font-bold rounded-xl transition shadow-sm"
                   >
                     Chi tiết
@@ -133,6 +137,7 @@
                   <router-link 
                     v-if="dest.hasVirtualTour"
                     :to="`/destinations/${dest.destinationId}/tour`"
+                    @click.stop="trackOpenTourFromRoute(dest)"
                     class="flex-1 sm:flex-none text-center px-4 py-2 bg-teal-600 hover:bg-teal-700 text-white text-xs font-bold rounded-xl transition shadow shadow-teal-600/10"
                   >
                     Tour 360°
@@ -190,6 +195,7 @@
 import { ref, onMounted, nextTick } from 'vue'
 import { useRoute } from 'vue-router'
 import api from '../utils/api'
+import { trackEvent } from '../services/analytics'
 import L from 'leaflet'
 import { 
   ArrowLeft as ArrowLeftIcon, 
@@ -227,6 +233,33 @@ const getThemeLabel = (theme) => {
   return themes[theme] || 'Khám phá'
 }
 
+const trackRouteDestinationClick = (dest, index) => {
+  trackEvent({
+    eventName: 'click_route_destination',
+    targetType: 'destination',
+    targetId: dest.destinationId,
+    metadata: { routeId: route.value?.id, displayOrder: index + 1 }
+  })
+}
+
+const trackOpenDestinationFromRoute = (dest) => {
+  trackEvent({
+    eventName: 'open_destination_from_route',
+    targetType: 'destination',
+    targetId: dest.destinationId,
+    metadata: { routeId: route.value?.id }
+  })
+}
+
+const trackOpenTourFromRoute = (dest) => {
+  trackEvent({
+    eventName: 'open_virtual_tour_from_route',
+    targetType: 'destination',
+    targetId: dest.destinationId,
+    metadata: { routeId: route.value?.id }
+  })
+}
+
 const fetchRouteDetail = async () => {
   loading.value = true
   error.value = null
@@ -235,6 +268,13 @@ const fetchRouteDetail = async () => {
     const res = await api.get(`/api/routes/${slug}`)
     if (res.success) {
       route.value = res.data
+      
+      // Track view_route event
+      trackEvent({
+        eventName: 'view_route',
+        targetType: 'route',
+        targetId: res.data.id
+      })
     }
   } catch (err) {
     error.value = err.message || 'Không thể tải chi tiết tuyến tham quan.'

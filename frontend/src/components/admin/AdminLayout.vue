@@ -65,6 +65,15 @@
             <RouteIcon class="w-5 h-5" />
             <span>Tuyến tham quan</span>
           </router-link>
+
+          <router-link 
+            to="/admin/analytics"
+            active-class="bg-teal-700/20 text-teal-400 font-semibold border-l-4 border-teal-500"
+            class="flex items-center space-x-3 px-4 py-3 rounded-lg text-slate-400 hover:bg-slate-900 hover:text-slate-100 transition duration-150"
+          >
+            <BarChart3Icon class="w-5 h-5" />
+            <span>Thống kê</span>
+          </router-link>
         </nav>
       </div>
 
@@ -169,6 +178,16 @@
             <RouteIcon class="w-5 h-5" />
             <span>Tuyến tham quan</span>
           </router-link>
+
+          <router-link 
+            to="/admin/analytics"
+            active-class="bg-teal-700/20 text-teal-400 font-semibold border-l-4 border-teal-500"
+            @click="isMobileMenuOpen = false"
+            class="flex items-center space-x-3 px-4 py-3 rounded-lg text-slate-400 hover:bg-slate-900 hover:text-slate-100 transition duration-150"
+          >
+            <BarChart3Icon class="w-5 h-5" />
+            <span>Thống kê</span>
+          </router-link>
         </nav>
       </div>
 
@@ -236,6 +255,7 @@ import {
   Image as ImageIcon, 
   Navigation as NavigationIcon, 
   Route as RouteIcon,
+  BarChart3 as BarChart3Icon,
   LogOut as LogOutIcon, 
   Menu as MenuIcon, 
   X as XIcon 
@@ -267,6 +287,7 @@ const pageTitle = computed(() => {
   if (route.name === 'AdminCreateRoute') return 'Tạo Tuyến tham quan'
   if (route.name === 'AdminEditRoute') return 'Chỉnh sửa Tuyến tham quan'
   if (route.name === 'AdminRouteDestinations') return 'Thiết lập Địa điểm cho Tuyến'
+  if (route.name === 'AdminAnalytics') return 'Thống kê & Phân tích hành vi'
   return 'Hệ thống Quản trị'
 })
 
