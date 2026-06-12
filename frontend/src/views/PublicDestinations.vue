@@ -80,9 +80,10 @@
         class="premium-btn px-4 py-2 rounded-full text-xs font-black transition-all border duration-200 shadow-sm"
         :class="[
           selectedCategory === cat.id 
-            ? 'bg-teal-600 text-white border-teal-600 shadow-teal-600/10' 
+            ? 'text-white border-transparent' 
             : 'bg-white text-slate-600 border-slate-200 hover:border-slate-350 hover:bg-slate-55'
         ]"
+        :style="selectedCategory === cat.id ? { backgroundColor: cat.color || '#0d9488', boxShadow: `0 4px 12px ${cat.color}33` } : {}"
       >
         {{ cat.name }}
       </button>

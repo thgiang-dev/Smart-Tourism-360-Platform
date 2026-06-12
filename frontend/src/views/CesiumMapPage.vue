@@ -78,16 +78,17 @@
                 >
                   Tất cả
                 </button>
-                <button 
+                 <button 
                   v-for="cat in categories" 
                   :key="cat.id"
                   @click="selectCategoryChip(cat.id)"
                   class="px-3 py-1.5 rounded-xl text-[10px] font-black transition-all border duration-200 shadow-sm"
                   :class="[
                     selectedCategory === cat.id 
-                      ? 'bg-teal-600 border-teal-600 text-white shadow-teal-600/10' 
+                      ? 'text-white border-transparent' 
                       : 'bg-slate-900 border-slate-800 text-slate-400 hover:border-slate-700 hover:text-white'
                   ]"
+                  :style="selectedCategory === cat.id ? { backgroundColor: cat.color || '#0d9488', boxShadow: `0 4px 12px ${cat.color}33` } : {}"
                 >
                   {{ cat.name }}
                 </button>

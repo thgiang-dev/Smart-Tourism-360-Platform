@@ -85,9 +85,10 @@
                   class="premium-btn px-3 py-1.5 rounded-xl text-[10px] font-black transition-all border duration-200 shadow-sm"
                   :class="[
                     selectedCategory === cat.id 
-                      ? 'bg-teal-600 border-teal-600 text-white shadow-teal-600/10' 
+                      ? 'text-white border-transparent' 
                       : 'bg-slate-50 border-slate-200 text-slate-600 hover:border-slate-350 hover:bg-white'
                   ]"
+                  :style="selectedCategory === cat.id ? { backgroundColor: cat.color || '#0d9488', boxShadow: `0 4px 12px ${cat.color}33` } : {}"
                 >
                   {{ cat.name }}
                 </button>
@@ -342,19 +343,98 @@ const initMap = () => {
   }, 200)
 }
 
+// Helper to get raw SVG icon path based on category name
+const getCategoryIconSvg = (categoryName) => {
+  const name = categoryName ? categoryName.toLowerCase() : ''
+  if (name.includes('văn hóa') || name.includes('lịch sử')) {
+    return `
+      <svg class="w-4 h-4 relative z-10" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+        <line x1="3" y1="22" x2="21" y2="22"></line>
+        <line x1="6" y1="18" x2="6" y2="11"></line>
+        <line x1="10" y1="18" x2="10" y2="11"></line>
+        <line x1="14" y1="18" x2="14" y2="11"></line>
+        <line x1="18" y1="18" x2="18" y2="11"></line>
+        <polygon points="12 2 3 7 21 7"></polygon>
+      </svg>
+    `
+  }
+  if (name.includes('tâm linh') || name.includes('chùa')) {
+    return `
+      <svg class="w-4 h-4 relative z-10" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+        <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"></path>
+        <path d="m5 3 1 2.5L8.5 6 6 7 5 9.5 4 7 1.5 6 4 5.5 5 3Z"></path>
+        <path d="m19 17 1 2.5 2.5.5-2.5 1-1 2.5-1-2.5-2.5-1 2.5-1 1-2.5Z"></path>
+      </svg>
+    `
+  }
+  if (name.includes('sinh thái') || name.includes('rừng') || name.includes('thiên nhiên')) {
+    return `
+      <svg class="w-4 h-4 relative z-10" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+        <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8a7 7 0 0 1-10 10Z"></path>
+        <path d="M19 2c-2.26 4.33-5.27 7.14-8 10"></path>
+      </svg>
+    `
+  }
+  if (name.includes('nông nghiệp') || name.includes('vườn') || name.includes('đồng')) {
+    return `
+      <svg class="w-4 h-4 relative z-10" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+        <path d="M7 20h10"></path>
+        <path d="M10 20c-1.5-2.5-2.5-5-1-10"></path>
+        <path d="M18 8c.4-1.8 1.5-3 2.5-3 .4 0 .5.3.3.6L19 10"></path>
+        <path d="M6 10c-1-2-1.5-3.5-.5-4.5.4-.4.8-.5 1.2-.2L9.5 9"></path>
+        <path d="M14 20c1.5-2.5 2-5 1-10"></path>
+      </svg>
+    `
+  }
+  if (name.includes('làng nghề') || name.includes('thủ công')) {
+    return `
+      <svg class="w-4 h-4 relative z-10" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+        <path d="m15 5 4 4"></path>
+        <path d="M21.5 12H16c-.5 0-1-.5-1-1V5.5c0-.5-.5-1-1-1H9c-.5 0-1 .5-1 1V6c0 .5-.5 1-1 1H5.5c-.5 0-1 .5-1 1v5c0 .5.5 1 1 1H6c.5 0 1 .5 1 1v1.5c0 .5.5 1 1 1H11c.5 0 1-.5 1-1V16c0-.5.5-1 1-1h5.5c.5 0 1-.5 1-1v-2Z"></path>
+        <path d="m9 15-5.5 5.5c-.7.7-.7 1.8 0 2.5.7.7 1.8.7 2.5 0L11.5 17"></path>
+      </svg>
+    `
+  }
+  if (name.includes('ẩm thực') || name.includes('ăn') || name.includes('uống')) {
+    return `
+      <svg class="w-4 h-4 relative z-10" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+        <path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"></path>
+        <path d="M7 2v20"></path>
+        <path d="M21 15V2v0a5 5 0 0 0-5 5v8c0 1.1.9 2 2 2h3Z"></path>
+        <path d="M19 17v5"></path>
+      </svg>
+    `
+  }
+  if (name.includes('lưu trú') || name.includes('khách sạn') || name.includes('nhà nghỉ')) {
+    return `
+      <svg class="w-4 h-4 relative z-10" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+        <path d="M2 4v16"></path>
+        <path d="M2 20h20"></path>
+        <path d="M22 10v10"></path>
+        <path d="M2 11h20"></path>
+        <path d="M6 11V7h6v4"></path>
+      </svg>
+    `
+  }
+  return `
+    <svg class="w-4 h-4 relative z-10" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="10"></circle>
+      <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon>
+    </svg>
+  `
+}
+
 // Helper to render customized marker divicon matching category color
-const createMarkerIcon = (color, hasTour) => {
+const createMarkerIcon = (color, categoryName, hasTour) => {
   const iconColor = color || '#0F766E' // Default teal
   const pulseHtml = hasTour ? `<div class="marker-pulse" style="background-color: ${iconColor}"></div>` : ''
+  const iconSvg = getCategoryIconSvg(categoryName)
   return L.divIcon({
     className: 'custom-div-icon',
     html: `
       <div class="relative flex items-center justify-center w-9 h-9 rounded-full shadow-lg border-2 border-white text-white transition-all duration-300 hover:scale-110 active:scale-95 cursor-pointer" style="background-color: ${iconColor}">
         ${pulseHtml}
-        <svg class="w-4 h-4 relative z-10" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
-          <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
-        </svg>
+        ${iconSvg}
       </div>
     `,
     iconSize: [36, 36],
@@ -381,7 +461,7 @@ const updateMapMarkers = () => {
     if (isNaN(lat) || isNaN(lng)) return
 
     const markerColor = dest.category?.color || '#0F766E'
-    const customIcon = createMarkerIcon(markerColor, dest.hasVirtualTour)
+    const customIcon = createMarkerIcon(markerColor, dest.category?.name, dest.hasVirtualTour)
     
     // Popup HTML layout
     const popupContent = `

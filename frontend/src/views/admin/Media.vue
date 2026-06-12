@@ -65,6 +65,7 @@
             <ImageIcon v-if="isImageType(item.name)" class="w-5 h-5 text-teal-600 flex-shrink-0" />
             <FilmIcon v-else-if="isVideoType(item.name)" class="w-5 h-5 text-rose-550 flex-shrink-0" />
             <MusicIcon v-else-if="isAudioType(item.name)" class="w-5 h-5 text-indigo-550 flex-shrink-0" />
+            <BoxIcon v-else-if="isModel3DType(item.name)" class="w-5 h-5 text-amber-500 flex-shrink-0" />
             <FileIcon v-else class="w-5 h-5 text-slate-400 flex-shrink-0" />
 
             <div class="min-w-0 flex-1 space-y-1.5">
@@ -216,9 +217,21 @@
             </span>
           </template>
 
+          <!-- MODEL3D -->
+          <template v-else-if="m.mediaType === 'model3d'">
+            <div class="w-full h-full flex flex-col items-center justify-center bg-slate-900/5 text-slate-500 group-hover:text-amber-500 transition">
+              <BoxIcon class="w-8 h-8 stroke-[1.5]" />
+              <span class="text-[10px] text-slate-400 font-bold uppercase mt-1">Mô hình 3D</span>
+            </div>
+            <!-- Model3D Badge -->
+            <span class="absolute top-2 right-2 px-2 py-0.5 bg-slate-955/80 backdrop-blur-sm text-[9px] font-black tracking-wider text-amber-450 rounded-md uppercase">
+              {{ getFileExt(m.fileName) }}
+            </span>
+          </template>
+
           <!-- OTHER UNKNOWN -->
           <template v-else>
-            <div class="w-full h-full flex flex-col items-center justify-center bg-slate-50 text-slate-400">
+            <div class="w-full h-full flex flex-col items-center justify-center bg-slate-55 text-slate-400">
               <FileIcon class="w-8 h-8" />
               <span class="text-[9px] font-bold mt-1">Unknown</span>
             </div>
@@ -322,6 +335,18 @@
               class="w-full mx-auto shadow-md rounded-lg"
               :src="selectedMedia.fileUrl"
             ></audio>
+          </div>
+
+          <!-- MODEL3D PREVIEW -->
+          <div 
+            v-else-if="selectedMedia.mediaType === 'model3d'"
+            class="w-full h-full flex items-center justify-center p-2"
+          >
+            <ModelViewer 
+              :src="selectedMedia.fileUrl" 
+              :auto-rotate="true"
+              class="w-full rounded-xl"
+            />
           </div>
 
           <!-- UNKNOWN -->
@@ -469,8 +494,10 @@ import {
   X as XIcon,
   Inbox as InboxIcon,
   AlertCircle as AlertCircleIcon,
-  Loader2 as Loader2Icon
+  Loader2 as Loader2Icon,
+  Box as BoxIcon
 } from 'lucide-vue-next'
+import ModelViewer from '../../components/public/ModelViewer.vue'
 
 const toastStore = useToastStore()
 const confirmStore = useConfirmStore()
@@ -493,7 +520,8 @@ const mediaTabs = [
   { label: 'Hình ảnh', value: 'image' },
   { label: '360° Panorama', value: 'panorama' },
   { label: 'Video', value: 'video' },
-  { label: 'Âm thanh', value: 'audio' }
+  { label: 'Âm thanh', value: 'audio' },
+  { label: 'Mô hình 3D', value: 'model3d' }
 ]
 
 const loading = ref(false)
@@ -622,6 +650,8 @@ const uploadSingleFile = async (queueItem) => {
     autoType = 'video'
   } else if (ext === '.mp3' || ext === '.wav') {
     autoType = 'audio'
+  } else if (ext === '.glb' || ext === '.gltf') {
+    autoType = 'model3d'
   }
   
   if (autoType) {
@@ -752,6 +782,11 @@ const isVideoType = (filename) => {
 const isAudioType = (filename) => {
   const ext = getFileExt(filename).toLowerCase()
   return ['mp3', 'wav', 'ogg'].includes(ext)
+}
+
+const isModel3DType = (filename) => {
+  const ext = getFileExt(filename).toLowerCase()
+  return ['glb', 'gltf'].includes(ext)
 }
 
 const formatBytes = (bytes, decimals = 2) => {

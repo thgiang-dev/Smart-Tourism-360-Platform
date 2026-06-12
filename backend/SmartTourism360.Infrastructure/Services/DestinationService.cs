@@ -58,6 +58,7 @@ namespace SmartTourism360.Infrastructure.Services
         {
             var query = _context.Destinations
                 .Include(d => d.Category)
+                .Include(d => d.Region)
                 .Include(d => d.CoverImage)
                 .Where(d => d.Status == "published")
                 .AsQueryable();
@@ -418,6 +419,7 @@ namespace SmartTourism360.Infrastructure.Services
                     Color = d.Category.Color
                 },
                 CoverImageUrl = d.CoverImage?.FileUrl,
+                RegionName = d.Region?.Name,
                 HasVirtualTour = d.HasVirtualTour
             };
         }

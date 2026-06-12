@@ -977,7 +977,12 @@ const closeHelp = () => {
 
 const exitTour = () => {
   stopAudio()
-  router.push(`/destinations/${route.params.id}`)
+  const expectedBackPath = `/destinations/${route.params.id}`
+  if (window.history.state && window.history.state.back === expectedBackPath) {
+    router.back()
+  } else {
+    router.replace(expectedBackPath)
+  }
 }
 
 // Watch route destination ID changes

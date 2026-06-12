@@ -11,6 +11,7 @@ namespace SmartTourism360.Application.DTOs.Destination
         public decimal Longitude { get; set; }
         public CategoryInfoDto Category { get; set; } = null!;
         public string? CoverImageUrl { get; set; }
+        public string? RegionName { get; set; }
         public bool HasVirtualTour { get; set; }
     }
 }
